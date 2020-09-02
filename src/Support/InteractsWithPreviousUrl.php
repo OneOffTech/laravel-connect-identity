@@ -4,7 +4,6 @@ namespace Oneofftech\Identities\Support;
 
 trait InteractsWithPreviousUrl
 {
-
     protected function savePreviousUrl()
     {
         session()->put('_oot.identities.previous_url', url()->previous());
@@ -14,5 +13,4 @@ trait InteractsWithPreviousUrl
     {
         return session()->get('_oot.identities.previous_url', url()->previous());
     }
-    
 }

@@ -18,7 +18,6 @@ class IdentitiesServiceProvider extends ServiceProvider
 
     public function register()
     {
-
     }
 
     // /**
@@ -31,4 +30,3 @@ class IdentitiesServiceProvider extends ServiceProvider
     //     return true;
     // }
 }
-

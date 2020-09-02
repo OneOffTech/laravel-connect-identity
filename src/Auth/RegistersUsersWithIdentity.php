@@ -18,7 +18,6 @@ trait RegistersUsersWithIdentity
 {
     use RedirectsUsers, InteractsWithPreviousUrl;
 
-    
     /**
      * Redirect the user to the Authentication provider authentication page.
      *
@@ -27,7 +26,7 @@ trait RegistersUsersWithIdentity
     public function redirect(Request $request, $provider)
     {
         // save the previous url as the callback will
-        // probably have the referrer header set 
+        // probably have the referrer header set
         // and in case of validation errors the
         // referrer has precedence over _previous.url
         // $request->session()->put('_oot.identities.previous_url', url()->previous());
@@ -56,12 +55,12 @@ trait RegistersUsersWithIdentity
 
         // if user denies the authorization request we get
         // GuzzleHttp\Exception\ClientException
-        // Client error: `POST https://gitlab.com/oauth/token` resulted in a `401 Unauthorized` 
+        // Client error: `POST https://gitlab.com/oauth/token` resulted in a `401 Unauthorized`
         // response: {"error":"invalid_grant","error_description":"The provided authorization grant is invalid, expired, revoked, does not ma (truncated...)
 
         // GuzzleHttp\Exception\ClientException
-        // Client error: `POST https://gitlab/oauth/token` resulted in a `401 Unauthorized` 
-        // response: {"error":"invalid_grant","error_description":"The provided authorization grant is invalid, expired, revoked, does not ma (truncated...) 
+        // Client error: `POST https://gitlab/oauth/token` resulted in a `401 Unauthorized`
+        // response: {"error":"invalid_grant","error_description":"The provided authorization grant is invalid, expired, revoked, does not ma (truncated...)
 
         // let's validate the oauthUser received first
 
@@ -75,8 +74,7 @@ trait RegistersUsersWithIdentity
 
         // create user and associate the identity
 
-        $user = DB::transaction(function() use($data, $provider, $oauthUser){
-
+        $user = DB::transaction(function () use ($data, $provider, $oauthUser) {
             $user = $this->create($data);
     
             $this->createIdentity($user, $provider, $oauthUser);
@@ -93,7 +91,7 @@ trait RegistersUsersWithIdentity
 
     /**
      * Maps the socialite user to attributes
-     * 
+     *
      * @param SocialiteUser $oauthUser
      * @return array
      */
@@ -107,16 +105,18 @@ trait RegistersUsersWithIdentity
     }
 
     protected function createIdentity($user, $provider, $oauthUser)
-    {        
-        return $user->identities()->updateOrCreate([
-            'provider'=> $provider, 
+    {
+        return $user->identities()->updateOrCreate(
+            [
+            'provider'=> $provider,
             'provider_id'=> $oauthUser->getId()
         ],
-        [
+            [
             'token'=> $oauthUser->token,
             'refresh_token'=> $oauthUser->refreshToken,
             'expires_at'=> $oauthUser->expiresIn ? now()->addSeconds($oauthUser->expiresIn) : null
-        ]);
+        ]
+        );
     }
 
     protected function sendRegistrationResponse(Request $request, $provider)
@@ -130,7 +130,6 @@ trait RegistersUsersWithIdentity
         return redirect()->intended($this->redirectPath());
     }
 
-    
     /**
      * The user has been registered.
      *

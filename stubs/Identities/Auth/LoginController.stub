@@ -13,9 +13,9 @@ class LoginController extends Controller
     | Login via Identity Controller
     |--------------------------------------------------------------------------
     |
-    | This controller handles authenticating users via their connected 
+    | This controller handles authenticating users via their connected
     | identities provided by third party authentication services.
-    | The controller uses a trait to conveniently provide its 
+    | The controller uses a trait to conveniently provide its
     | functionality to your applications.
     |
     */

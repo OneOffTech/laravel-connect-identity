@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Validation\ValidationException;
 use Oneofftech\Identities\Facades\Identity;
@@ -24,7 +23,7 @@ trait AuthenticatesUsersWithIdentity
     public function redirect($provider)
     {
         // save the previous url as the callback will
-        // probably have the referrer header set 
+        // probably have the referrer header set
         // and in case of validation errors the
         // referrer has precedence over _previous.url
         // $request->session()->put('_oot.identities.previous_url', url()->previous());
@@ -36,7 +35,7 @@ trait AuthenticatesUsersWithIdentity
     }
 
     /**
-     * Log in the user using the information coming 
+     * Log in the user using the information coming
      * from the authentication provider.
      *
      * @return \Illuminate\Http\Response
@@ -57,13 +56,12 @@ trait AuthenticatesUsersWithIdentity
         // Client error: `POST https://gitlab.com/oauth/token` resulted in a `401 Unauthorized` response: {"error":"invalid_grant","error_description":"The provided authorization grant is invalid, expired, revoked, does not ma (truncated...)
         // $this->sendFailedLoginResponse
         
-
-        // If we find a registered user with the 
+        // If we find a registered user with the
         // same identity we attempt to login
 
         $user = $this->findUserFromIdentity($identity, $provider);
 
-        if(! $user){
+        if (! $user) {
             $this->sendFailedLoginResponse($request, $provider);
         }
         
@@ -72,17 +70,14 @@ trait AuthenticatesUsersWithIdentity
         return $this->sendLoginResponse($request);
     }
 
-
     /**
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
     protected function findUserFromIdentity($identity, $provider)
     {
-        try{
-
+        try {
             return Identity::findUserByIdentity($provider, $identity->getId());
-
-        } catch(ModelNotFoundException $mntfex){
+        } catch (ModelNotFoundException $mntfex) {
             return null;
         }
     }
@@ -118,7 +113,6 @@ trait AuthenticatesUsersWithIdentity
 
         return redirect()->intended($this->redirectPath());
     }
-
 
     /**
      * The user has been authenticated.

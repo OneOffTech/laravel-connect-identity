@@ -73,7 +73,6 @@ class ScaffoldAuthenticationControllers extends Command
 
         $this->info('Model scaffolding generated successfully.');
 
-        
         // add routes registration
 
         file_put_contents(
@@ -92,7 +91,6 @@ class ScaffoldAuthenticationControllers extends Command
         );
 
         $this->info('Added identities migration.');
-
 
         return 0;
     }

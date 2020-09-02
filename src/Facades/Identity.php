@@ -22,7 +22,6 @@ class Identity extends Facade
      */
     public static $userModel = 'App\\User';
 
-
     /**
      * Get the registered name of the component.
      *
@@ -34,7 +33,7 @@ class Identity extends Facade
     }
 
     /**
-     * Register the routes for handling login, registration 
+     * Register the routes for handling login, registration
      * and identity management for an application.
      *
      * @return void
@@ -52,9 +51,7 @@ class Identity extends Facade
             ->name("oneofftech::register.provider");
         $router->get('register-via/{provider}/callback', '\App\Http\Controllers\Identities\Auth\RegisterController@register')
             ->name("oneofftech::register.callback");
-
     }
-
 
     /**
      * Register the events listeners required to handle
@@ -69,9 +66,6 @@ class Identity extends Facade
         Event::listen(SocialiteWasCalled::class, DropboxExtendSocialite::class);
     }
 
-
-
-    
     /**
      * Find a user instance by the given ID.
      *
@@ -96,7 +90,7 @@ class Identity extends Facade
             ->when($email, function ($query, $email) {
                 return $query->where('email', $email);
             })
-            ->whereHas('identities', function($query) use($provider, $id) {
+            ->whereHas('identities', function ($query) use ($provider, $id) {
                 $query->where('provider', $provider)
                     ->where('provider_id', $id);
             })

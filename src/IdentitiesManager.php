@@ -1,9 +1,7 @@
-<?php 
-
+<?php
 
 namespace Oneofftech\Identities;
 
-use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Illuminate\Support\Manager;
 use Laravel\Socialite\Facades\Socialite;
@@ -18,12 +16,9 @@ class IdentitiesManager extends Manager
         // Attempt to create a driver
         // or fallback to Socialite
 
-        try{
-            
+        try {
             return parent::createDriver($driver);
-
-        } catch(InvalidArgumentException $iaex){
-
+        } catch (InvalidArgumentException $iaex) {
             return Socialite::driver($driver);
         }
     }
@@ -45,7 +40,6 @@ class IdentitiesManager extends Manager
             ]);
     }
 
-    
     /**
      * Create an instance of the dropbox driver.
      *
@@ -69,5 +63,4 @@ class IdentitiesManager extends Manager
     {
         throw new InvalidArgumentException('No Identity or Socialite driver was specified.');
     }
-    
 }
