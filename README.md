@@ -62,4 +62,4 @@ this step is optional.
 
 ## License
 
-...
+Laravel Connect Identity is licensed under the [MIT license](./LICENSE).
