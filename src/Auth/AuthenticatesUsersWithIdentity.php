@@ -16,7 +16,6 @@ trait AuthenticatesUsersWithIdentity
 {
     use RedirectsUsers, InteractsWithPreviousUrl;
 
-    
     /**
      * Redirect the user to the provider authentication page.
      *
@@ -71,29 +70,6 @@ trait AuthenticatesUsersWithIdentity
         $this->guard()->login($user /*, $remember = false*/);
             
         return $this->sendLoginResponse($request);
-        
-        // $this->validateLogin($user);
-
-        // // If the class is using the ThrottlesLogins trait, we can automatically throttle
-        // // the login attempts for this application. We'll key this by the username and
-        // // the IP address of the client making these requests into this application.
-        // if (method_exists($this, 'hasTooManyLoginAttempts') &&
-        //     $this->hasTooManyLoginAttempts($request)) {
-        //     $this->fireLockoutEvent($request);
-
-        //     return $this->sendLockoutResponse($request);
-        // }
-
-        // if ($this->attemptLogin($request)) {
-        //     return $this->sendLoginResponse($request);
-        // }
-
-        // // If the login attempt was unsuccessful we will increment the number of attempts
-        // // to login and redirect the user back to the login form. Of course, when this
-        // // user surpasses their maximum number of attempts they will get locked out.
-        // $this->incrementLoginAttempts($request);
-
-        return $this->sendFailedLoginResponse($request, $provider);
     }
 
 
@@ -127,49 +103,6 @@ trait AuthenticatesUsersWithIdentity
     }
 
     /**
-     * Register or login a user by connecting
-     * the identity provider
-     * 
-     * 
-     */
-    // protected function connect($provider, SocialiteUser $user)
-    // {        
-    //     /**
-    //      * @var App\User
-    //      */
-    //     $localUser = Auth::user();
-
-    //     // if not already logged in and the provider do not share the email
-    //     // address then we don't have a way to identify the user so abort
-    //     abort_unless($user->getEmail(), '422', 'Could not get email address');
-
-    //     $registeredUser = DB::transaction(function() use ($localUser, $user, $provider){
-    
-    //         if(!$localUser){
-    //             // if user not logged-in then register the new user
-    //             $localUser = User::findFromIdentityOrCreate($user->getEmail(), $provider, $user->getId(), [
-    //                 'name' => $user->getName() ?? $user->getNickname(),
-    //                 'email_verified_at' => now(),
-    //             ]);
-    //         }
-    
-    //         $localUser->identities()->updateOrCreate([
-    //                 'provider'=> $provider, 
-    //                 'provider_id'=> $user->getId()
-    //             ],
-    //             [
-    //                 'token'=> $user->token,
-    //                 'refresh_token'=> $user->refreshToken,
-    //                 'expires_at'=> $user->expiresIn ? now()->addSeconds($user->expiresIn) : null
-    //             ]);
-
-    //         return $localUser;
-    //     });
-
-    //     return $registeredUser;
-    // }
-
-    /**
      * Send the response after the user was authenticated.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -178,8 +111,6 @@ trait AuthenticatesUsersWithIdentity
     protected function sendLoginResponse(Request $request)
     {
         $request->session()->regenerate();
-
-        // $this->clearLoginAttempts($request);
 
         if ($response = $this->authenticated($this->guard()->user())) {
             return $response;
