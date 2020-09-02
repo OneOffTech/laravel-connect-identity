@@ -1,0 +1,48 @@
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+use Oneofftech\Identities\Facades\Identity as IdentityFacade;
+
+class Identity extends Model
+{
+
+    /**
+     * @var array
+     */
+    protected $casts = [
+        'expires_at' => 'datetime',
+    ];
+
+    /**
+     * @var array
+     */
+    protected $fillable = [
+        'user_id',
+        'provider_id',
+        'provider',
+        'avatar',
+        'token',
+        'refresh_token',
+        'expires_at',
+    ];
+
+    /**
+     * @var array
+     */
+    protected $hidden = [
+        'token',
+        'refresh_token',
+        'expires_at',
+    ];
+    
+    /**
+     *
+     */
+    public function user()
+    {
+        return $this->belongsTo(IdentityFacade::userModel());
+    }
+}
