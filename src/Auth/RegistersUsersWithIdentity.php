@@ -114,7 +114,8 @@ trait RegistersUsersWithIdentity
             [
             'token'=> $oauthUser->token,
             'refresh_token'=> $oauthUser->refreshToken,
-            'expires_at'=> $oauthUser->expiresIn ? now()->addSeconds($oauthUser->expiresIn) : null
+            'expires_at'=> $oauthUser->expiresIn ? now()->addSeconds($oauthUser->expiresIn) : null,
+            'registration' => true,
         ]
         );
     }

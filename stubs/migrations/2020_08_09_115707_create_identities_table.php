@@ -21,6 +21,7 @@ class CreateIdentitiesTable extends Migration
             $table->string('token', 255);
             $table->string('refresh_token', 255)->nullable();
             $table->dateTime('expires_at')->nullable();
+            $table->boolean('registratration')->default(false);
             $table->timestamps();
         });
     }

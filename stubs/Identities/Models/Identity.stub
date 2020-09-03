@@ -27,6 +27,7 @@ class Identity extends Model
         'token',
         'refresh_token',
         'expires_at',
+        'registration',
     ];
 
     /**
