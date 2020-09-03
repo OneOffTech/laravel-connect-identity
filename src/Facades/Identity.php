@@ -14,6 +14,12 @@ use SocialiteProviders\GitLab\GitLabExtendSocialite;
  */
 class Identity extends Facade
 {
+    /**
+     * The user model that should be used.
+     *
+     * @var string
+     */
+    public static $appNamespace = 'App';
 
     /**
      * The user model that should be used.
@@ -21,6 +27,13 @@ class Identity extends Facade
      * @var string
      */
     public static $userModel = 'App\\User';
+
+    /**
+     * The identity model that should be used.
+     *
+     * @var string
+     */
+    public static $identityModel = 'App\\Identity';
 
     /**
      * Get the registered name of the component.
@@ -42,14 +55,16 @@ class Identity extends Facade
     {
         $router = static::$app->make('router');
 
-        $router->get('login-via/{provider}', '\App\Http\Controllers\Identities\Auth\LoginController@redirect')
+        $namespace = '\\'.rtrim(self::$appNamespace, '\\');
+
+        $router->get('login-via/{provider}', "$namespace\Http\Controllers\Identities\Auth\LoginController@redirect")
             ->name("oneofftech::login.provider");
-        $router->get('login-via/{provider}/callback', '\App\Http\Controllers\Identities\Auth\LoginController@login')
+        $router->get('login-via/{provider}/callback', "$namespace\Http\Controllers\Identities\Auth\LoginController@login")
             ->name("oneofftech::login.callback");
         
-        $router->get('register-via/{provider}', '\App\Http\Controllers\Identities\Auth\RegisterController@redirect')
+        $router->get('register-via/{provider}', "$namespace\Http\Controllers\Identities\Auth\RegisterController@redirect")
             ->name("oneofftech::register.provider");
-        $router->get('register-via/{provider}/callback', '\App\Http\Controllers\Identities\Auth\RegisterController@register')
+        $router->get('register-via/{provider}/callback', "$namespace\Http\Controllers\Identities\Auth\RegisterController@register")
             ->name("oneofftech::register.callback");
     }
 
@@ -139,7 +154,7 @@ class Identity extends Facade
      */
     public static function identityModel()
     {
-        return 'App\\Identity';
+        return static::$identityModel;
     }
 
     /**
@@ -152,5 +167,31 @@ class Identity extends Facade
         $model = static::identityModel();
 
         return new $model;
+    }
+
+    /**
+     * Specify the identity model that should be used.
+     *
+     * @param  string  $model
+     * @return static
+     */
+    public static function useIdentityModel(string $model)
+    {
+        static::$identityModel = $model;
+
+        return new static;
+    }
+
+    /**
+     * Specify the application namespace that should be used.
+     *
+     * @param  string  $model
+     * @return static
+     */
+    public static function useNamespace(string $namespace)
+    {
+        static::$appNamespace = $namespace;
+
+        return new static;
     }
 }

@@ -56,6 +56,55 @@ this step is optional.
 \Oneofftech\Identities\Facades\Identity::events();
 ```
 
+    public function boot()
+    {
+        parent::boot();
+
+        \Oneofftech\Identities\Facades\Identity::events();
+    }
+
+
+Inserire i valori nei services secondo le specifiche di Laravel Socialite
+
+
+```php
+    'gitlab' => [
+        'client_id' => env('GITLAB_CLIENT_ID'),
+        'client_secret' => env('GITLAB_CLIENT_SECRET'),
+        'redirect' => null, // set in the controller no need to specify
+        'instance_uri' => env('GITLAB_INSTANCE_URI', 'https://gitlab.com/')
+    ],
+```
+
+
+### Using a personalized application namespace
+
+If you are using a custom application namespace instead of the default `App`, 
+you need to tell which namespace and models to use.
+
+To do so add the following lines in your AppServiceProvider;
+
+```php
+
+use Oneofftech\Identities\Facades\Identity;
+
+class AppServiceProvider extends ServiceProvider
+{
+
+    public function boot()
+    {
+        Identity::useNamespace("KBox\\");
+        Identity::useIdentityModel("KBox\\Identity");
+        Identity::useUserModel("KBox\\User");
+
+        // ...
+    }
+}
+```
+
+The `ui:identities` command is namespace aware.
+
+
 ## Basic Usage
 
 ...
