@@ -23,7 +23,6 @@ class Identity extends Model
         'user_id',
         'provider_id',
         'provider',
-        'avatar',
         'token',
         'refresh_token',
         'expires_at',
