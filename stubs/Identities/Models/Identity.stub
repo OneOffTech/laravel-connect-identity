@@ -33,6 +33,7 @@ class Identity extends Model
      * @var array
      */
     protected $hidden = [
+        'provider_id',
         'token',
         'refresh_token',
         'expires_at',
