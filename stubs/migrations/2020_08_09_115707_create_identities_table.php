@@ -15,7 +15,7 @@ class CreateIdentitiesTable extends Migration
     {
         Schema::create('identities', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id'); // the local user identifier // make it configurable
+            $table->foreignId('user_id');  // the local user identifier
             $table->string('provider');    // the authentication provider name
             $table->string('provider_id'); // the user identifier within the authentication service
             $table->string('token', 255);
