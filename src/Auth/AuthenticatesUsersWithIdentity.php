@@ -107,7 +107,7 @@ trait AuthenticatesUsersWithIdentity
     {
         $request->session()->regenerate();
 
-        if ($response = $this->authenticated($this->guard()->user())) {
+        if ($response = $this->authenticated($request, $this->guard()->user())) {
             return $response;
         }
 
@@ -120,7 +120,7 @@ trait AuthenticatesUsersWithIdentity
      * @param  mixed  $user
      * @return mixed
      */
-    protected function authenticated($user)
+    protected function authenticated(Request $request, $user)
     {
         //
     }
