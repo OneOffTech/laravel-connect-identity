@@ -92,19 +92,15 @@ class Identity extends Facade
     }
 
     /**
-     * Find a user instance by the given email address or fail.
+     * Find a user instance by the given provider or fail.
      *
      * @param  string  $provider
      * @param  string  $id
-     * @param  string  $email
      * @return mixed
      */
-    public static function findUserByIdentity(string $provider, string $id, string $email = null)
+    public static function findUserByIdentity(string $provider, string $id)
     {
         return static::newUserModel()
-            ->when($email, function ($query, $email) {
-                return $query->where('email', $email);
-            })
             ->whereHas('identities', function ($query) use ($provider, $id) {
                 $query->where('provider', $provider)
                     ->where('provider_id', $id);
