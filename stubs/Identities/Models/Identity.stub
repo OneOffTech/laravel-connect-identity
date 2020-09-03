@@ -14,6 +14,7 @@ class Identity extends Model
      */
     protected $casts = [
         'expires_at' => 'datetime',
+        'registration' => 'bool',
     ];
 
     /**
