@@ -23,7 +23,7 @@ class ScaffoldAuthenticationControllers extends Command
      *
      * @var string
      */
-    protected $signature = 'ui:identities';
+    protected $signature = 'ui:identities {--force : Overwrite existing files}';
 
     /**
      * The console command description.
@@ -65,8 +65,6 @@ class ScaffoldAuthenticationControllers extends Command
      */
     public function handle()
     {
-        // TODO: do not replace existing files unless forced
-
         $this->identifyApplicationNamespace();
 
         $this->scaffoldAuthenticationControllers();
@@ -103,10 +101,22 @@ class ScaffoldAuthenticationControllers extends Command
 
         collect($this->filesystem->allFiles(__DIR__.'/../../../stubs/Identities/Auth'))
             ->each(function (SplFileInfo $file) {
-                $this->filesystem->put(
-                    app_path('Http/Controllers/Identities/Auth/'.Str::replaceLast('.stub', '.php', $file->getFilename())),
-                    $this->compileControllerStub($file->getPathname())
-                );
+                $controllerName = Str::replaceLast('.stub', '.php', $file->getFilename());
+                $controller = app_path("Http/Controllers/Identities/Auth/$controllerName");
+
+                if (file_exists($controller) && ! $this->option('force')) {
+                    if ($this->confirm("The [$controllerName] file already exists. Do you want to replace it?")) {
+                        $this->filesystem->put(
+                            $controller,
+                            $this->compileControllerStub($file->getPathname())
+                        );
+                    }
+                } else {
+                    $this->filesystem->put(
+                        $controller,
+                        $this->compileControllerStub($file->getPathname())
+                    );
+                }
             });
     }
 
@@ -120,10 +130,22 @@ class ScaffoldAuthenticationControllers extends Command
 
         collect($this->filesystem->allFiles(__DIR__.'/../../../stubs/Identities/Models'))
             ->each(function (SplFileInfo $file) {
-                $this->filesystem->put(
-                    app_path(Str::replaceLast('.stub', '.php', $file->getFilename())),
-                    $this->compileModelStub($file->getPathname())
-                );
+                $modelName = Str::replaceLast('.stub', '.php', $file->getFilename());
+                $model = app_path($modelName);
+
+                if (file_exists($model) && ! $this->option('force')) {
+                    if ($this->confirm("The [$modelName] file already exists. Do you want to replace it?")) {
+                        $this->filesystem->put(
+                            $model,
+                            $this->compileModelStub($file->getPathname())
+                        );
+                    }
+                } else {
+                    $this->filesystem->put(
+                        $model,
+                        $this->compileModelStub($file->getPathname())
+                    );
+                }
             });
     }
 
