@@ -198,6 +198,12 @@ trait RegistersUsersWithIdentity
             return [];
         }
 
-        return json_decode($request->session()->pull('_oot.identities.attributes'), true);
+        $savedAttributes = $request->session()->pull('_oot.identities.attributes') ?? null;
+
+        if (! $savedAttributes) {
+            return [];
+        }
+
+        return json_decode($savedAttributes, true);
     }
 }
