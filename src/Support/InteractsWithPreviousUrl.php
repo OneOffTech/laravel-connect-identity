@@ -11,6 +11,6 @@ trait InteractsWithPreviousUrl
 
     protected function getPreviousUrl()
     {
-        return session()->get('_oot.identities.previous_url', url()->previous());
+        return session()->pull('_oot.identities.previous_url', url()->previous());
     }
 }
