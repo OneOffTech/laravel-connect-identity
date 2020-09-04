@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\RedirectsUsers;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Oneofftech\Identities\Facades\IdentityCrypt;
 use Illuminate\Validation\ValidationException;
@@ -29,8 +30,10 @@ trait RegistersUsersWithIdentity
         // probably have the referrer header set
         // and in case of validation errors the
         // referrer has precedence over _previous.url
-        // $request->session()->put('_oot.identities.previous_url', url()->previous());
         $this->savePreviousUrl();
+
+        // get additional user defined attributes
+        $this->pushAttributes($request);
 
         return Identity::driver($provider)
             ->redirectUrl(route('oneofftech::register.callback', ['provider' => $provider]))
@@ -65,7 +68,7 @@ trait RegistersUsersWithIdentity
         /**
          * @var \Illuminate\Contracts\Validation\Validator
          */
-        $validator = $this->validator($this->map($oauthUser));
+        $validator = $this->validator($this->map($request, $oauthUser));
 
         if ($validator->fails()) {
 
@@ -102,13 +105,15 @@ trait RegistersUsersWithIdentity
      * @param SocialiteUser $oauthUser
      * @return array
      */
-    protected function map(SocialiteUser $oauthUser)
+    protected function map(Request $request, SocialiteUser $oauthUser)
     {
-        return [
+        $user = [
             'name' => $oauthUser->getName() ?? $oauthUser->getNickname(),
             'email' => $oauthUser->getEmail(),
             'avatar' => $oauthUser->getAvatar(),
         ];
+
+        return array_merge($user, $this->pullAttributes($request));
     }
 
     protected function createIdentity($user, $provider, $oauthUser)
@@ -157,5 +162,42 @@ trait RegistersUsersWithIdentity
     protected function guard()
     {
         return Auth::guard();
+    }
+
+    /**
+     * The attributes that should be retrieved from
+     * the request to append to the redirect
+     *
+     * @var array
+     */
+    protected function redirectAttributes()
+    {
+        if (method_exists($this, 'attributes')) {
+            return $this->attributes();
+        }
+
+        return property_exists($this, 'attributes') ? $this->attributes : [];
+    }
+
+    protected function pushAttributes($request)
+    {
+        $attributes = $this->redirectAttributes() ?? [];
+
+        if (empty($attributes)) {
+            return;
+        }
+        
+        $request->session()->put('_oot.identities.attributes', json_encode($request->only($attributes)));
+    }
+
+    protected function pullAttributes($request)
+    {
+        $attributes = $this->redirectAttributes() ?? [];
+
+        if (empty($attributes)) {
+            return [];
+        }
+
+        return json_decode($request->session()->pull('_oot.identities.attributes'), true);
     }
 }
