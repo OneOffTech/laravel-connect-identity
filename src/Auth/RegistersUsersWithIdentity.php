@@ -6,9 +6,9 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Support\Facades\DB;
+use Oneofftech\Identities\Facades\IdentityCrypt;
 use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\AbstractUser as SocialiteUser;
 use Oneofftech\Identities\Facades\Identity;
@@ -109,11 +109,11 @@ trait RegistersUsersWithIdentity
         return $user->identities()->updateOrCreate(
             [
             'provider'=> $provider,
-            'provider_id'=> $oauthUser->getId()
+            'provider_id'=> IdentityCrypt::hash($oauthUser->getId())
         ],
             [
-            'token'=> $oauthUser->token,
-            'refresh_token'=> $oauthUser->refreshToken,
+            'token'=> IdentityCrypt::encryptString($oauthUser->token),
+            'refresh_token'=> IdentityCrypt::encryptString($oauthUser->refreshToken),
             'expires_at'=> $oauthUser->expiresIn ? now()->addSeconds($oauthUser->expiresIn) : null,
             'registration' => true,
         ]

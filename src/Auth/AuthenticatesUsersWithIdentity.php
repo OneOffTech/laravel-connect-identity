@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Validation\ValidationException;
 use Oneofftech\Identities\Facades\Identity;
+use Oneofftech\Identities\Facades\IdentityCrypt;
 use Oneofftech\Identities\Support\InteractsWithPreviousUrl;
 
 trait AuthenticatesUsersWithIdentity
@@ -76,7 +77,7 @@ trait AuthenticatesUsersWithIdentity
     protected function findUserFromIdentity($identity, $provider)
     {
         try {
-            return Identity::findUserByIdentity($provider, $identity->getId());
+            return Identity::findUserByIdentity($provider, IdentityCrypt::hash($identity->getId()));
         } catch (ModelNotFoundException $mntfex) {
             return null;
         }
