@@ -5,12 +5,17 @@ namespace Oneofftech\Identities\Providers;
 use Illuminate\Support\Str;
 use Illuminate\Support\ServiceProvider;
 use Oneofftech\Identities\Encryption\Encrypter;
+use Oneofftech\Identities\View\Components\IdentityLink;
 use Oneofftech\Identities\Console\Commands\ScaffoldAuthenticationControllers;
 
 class IdentitiesServiceProvider extends ServiceProvider
 {
     public function boot()
     {
+        $this->loadViewComponentsAs('oneofftech', [
+            IdentityLink::class,
+        ]);
+
         if ($this->app->runningInConsole()) {
             $this->commands([
                 ScaffoldAuthenticationControllers::class,
