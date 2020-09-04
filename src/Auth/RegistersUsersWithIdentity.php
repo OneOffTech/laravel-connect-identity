@@ -62,12 +62,19 @@ trait RegistersUsersWithIdentity
         // Client error: `POST https://gitlab/oauth/token` resulted in a `401 Unauthorized`
         // response: {"error":"invalid_grant","error_description":"The provided authorization grant is invalid, expired, revoked, does not ma (truncated...)
 
-        // let's validate the oauthUser received first
-
+        /**
+         * @var \Illuminate\Contracts\Validation\Validator
+         */
         $validator = $this->validator($this->map($oauthUser));
 
         if ($validator->fails()) {
-            throw (new ValidationException($validator))->redirectTo($previous_url);
+
+            // throw a validation error that uses
+            // $provider as the key
+
+            throw ValidationException::withMessages([
+                "$provider" => Arr::flatten($validator->errors()->all()),
+            ])->redirectTo($previous_url);
         }
 
         $data = $validator->validated();
