@@ -73,9 +73,9 @@ class IdentityLink extends Component
     public function render()
     {
         return <<<'blade'
-            <a href="{{ route('oneofftech::' . $action . '.provider', array_merge($parameters, ['provider' => $provider])) }}" {{ $attributes }}>
-                {{ __($label, ['provider' => $provider]) }}
-            </a>
-        blade;
+    <a href="{{ route('oneofftech::' . $action . '.provider', array_merge($parameters, ['provider' => $provider])) }}" {{ $attributes }}>
+        {{ __($label, ['provider' => $provider]) }}
+    </a>
+blade;
     }
 }
