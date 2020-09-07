@@ -1,6 +1,8 @@
 
 # Laravel Connect Identity
 
+![CI](https://github.com/OneOffTech/laravel-connect-identity/workflows/CI/badge.svg)
+
 Add registration and log in to you application via third party identity providers (e.g. Gitlab, Facebook, ...).
 
 While the package provides controllers, models, migrations and routes to handle registration and login actions
