@@ -3,6 +3,7 @@
 namespace Tests;
 
 use ReflectionFunction;
+use Illuminate\Support\Str;
 use Illuminate\Events\Dispatcher;
 use Laravel\Socialite\SocialiteServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
@@ -44,6 +45,11 @@ abstract class TestCase extends BaseTestCase
             'redirect' => null,
             'instance_uri' => 'https://gitlab.com/'
         ]);
+
+        $key = Str::random(32);
+        $app['config']->set('app.key', $key);
+        $app['config']->set('app.cipher', 'AES-256-CBC');
+        $app['config']->set('identities.key', $key);
     }
     
     /**

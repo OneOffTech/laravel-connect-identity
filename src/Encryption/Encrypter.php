@@ -23,9 +23,9 @@ class Encrypter extends BaseEncrypter
         } catch (\Throwable $e) {
             $currentKey = $this->key;
 
-            $this->key = Str::startsWith(config('identity.old_key'), 'base64:')
-                            ? base64_decode(substr(config('identity.old_key'), 7))
-                            : config('identity.old_key');
+            $this->key = Str::startsWith(config('identities.old_key'), 'base64:')
+                            ? base64_decode(substr(config('identities.old_key'), 7))
+                            : config('identities.old_key');
 
             return tap(parent::decrypt($payload, $unserialize), function () use ($currentKey) {
                 $this->key = $currentKey;
