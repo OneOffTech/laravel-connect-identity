@@ -56,4 +56,9 @@ class IdentityServiceProviderTest extends TestCase
 
         $this->assertListenerIsAttachedToEvent(GitLabExtendSocialite::class, SocialiteWasCalled::class);
     }
+
+    public function test_facade_return_manager_instance()
+    {
+        $this->assertInstanceOf(IdentitiesManager::class, Identity::getFacadeRoot());
+    }
 }
