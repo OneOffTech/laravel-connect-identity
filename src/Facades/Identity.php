@@ -190,4 +190,14 @@ class Identity extends Facade
 
         return new static;
     }
+    
+    /**
+     * Get the configured namespace
+     *
+     * @return string
+     */
+    public static function namespace()
+    {
+        return static::$appNamespace;
+    }
 }
