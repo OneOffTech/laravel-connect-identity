@@ -27,6 +27,19 @@ class EncrypterTest extends TestCase
         $this->assertEquals('test', $decrypted);
     }
 
+    public function test_value_encrypted_with_old_base64_key_can_be_decrypted()
+    {
+        $key = Str::random(32);
+        $this->app['config']->set('identities.old_key', 'base64:'.base64_encode($key));
+        $encrypter = new Encrypter($key, 'AES-256-CBC');
+
+        $encryptedWithOldKey = $encrypter->encrypt('test');
+
+        $decrypted = IdentityCrypt::decrypt($encryptedWithOldKey);
+
+        $this->assertEquals('test', $decrypted);
+    }
+
     public function test_value_can_be_encrypted()
     {
         $encrypted = IdentityCrypt::encrypt('test');
