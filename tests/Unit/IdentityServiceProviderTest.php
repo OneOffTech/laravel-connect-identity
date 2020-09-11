@@ -39,6 +39,15 @@ class IdentityServiceProviderTest extends TestCase
         $this->assertTrue($router->has('oneofftech::login.callback'));
         $this->assertTrue($router->has('oneofftech::register.provider'));
         $this->assertTrue($router->has('oneofftech::register.callback'));
+
+        $routes = collect($router->getRoutes()->getRoutes())->map(function ($r) {
+            return $r->getActionName();
+        });
+
+        $this->assertContains('\App\Http\Controllers\Identities\Auth\LoginController@redirect', $routes);
+        $this->assertContains('\App\Http\Controllers\Identities\Auth\LoginController@login', $routes);
+        $this->assertContains('\App\Http\Controllers\Identities\Auth\RegisterController@redirect', $routes);
+        $this->assertContains('\App\Http\Controllers\Identities\Auth\RegisterController@register', $routes);
     }
 
     public function test_events_are_registered()
