@@ -3,12 +3,15 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use Laravel\Socialite\Two\GitlabProvider;
+use SocialiteProviders\Dropbox\Provider as DropboxDriver;
 use Oneofftech\Identities\Facades\Identity;
 use Oneofftech\Identities\IdentitiesManager;
 use SocialiteProviders\Manager\SocialiteWasCalled;
 use SocialiteProviders\GitLab\GitLabExtendSocialite;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use InvalidArgumentException;
+use Laravel\Socialite\Two\FacebookProvider;
+use SocialiteProviders\GitLab\Provider as GitlabSocialiteProvider;
 
 class IdentityServiceProviderTest extends TestCase
 {
@@ -19,8 +22,41 @@ class IdentityServiceProviderTest extends TestCase
         $factory = $this->app->make(IdentitiesManager::class);
 
         $provider = $factory->driver('gitlab');
+        
+        $this->assertInstanceOf(GitlabSocialiteProvider::class, $provider);
+    }
 
-        $this->assertInstanceOf(GitlabProvider::class, $provider);
+    public function test_it_can_instantiate_the_facebook_driver()
+    {
+        $this->app['config']->set('services.facebook', [
+            'client_id' => 'aaa',
+            'client_secret' => 'bbb',
+            'redirect' => null,
+        ]);
+
+        $factory = $this->app->make(IdentitiesManager::class);
+
+        $provider = $factory->driver('facebook');
+
+        $this->assertInstanceOf(FacebookProvider::class, $provider);
+    }
+
+    public function test_non_existing_provider_throws()
+    {
+        $factory = $this->app->make(IdentitiesManager::class);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $provider = $factory->driver('slurpbook');
+    }
+
+    public function test_it_can_instantiate_the_dropbox_driver()
+    {
+        $factory = $this->app->make(IdentitiesManager::class);
+
+        $provider = $factory->driver('dropbox');
+
+        $this->assertInstanceOf(DropboxDriver::class, $provider);
     }
 
     public function test_routes_are_registered()
