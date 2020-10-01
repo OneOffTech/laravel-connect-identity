@@ -8,6 +8,9 @@ use Illuminate\Events\Dispatcher;
 use Laravel\Socialite\SocialiteServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use Oneofftech\Identities\Providers\IdentitiesServiceProvider;
+use SocialiteProviders\Dropbox\DropboxExtendSocialite;
+use SocialiteProviders\GitLab\GitLabExtendSocialite;
+use SocialiteProviders\Manager\SocialiteWasCalled;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -19,7 +22,7 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        // Your code here
+        $this->activateSocialiteExtensions();
     }
 
     /**
@@ -45,6 +48,11 @@ abstract class TestCase extends BaseTestCase
             'redirect' => null,
             'instance_uri' => 'https://gitlab.com/'
         ]);
+        $app['config']->set('services.dropbox', [
+            'client_id' => 'aaa',
+            'client_secret' => 'bbb',
+            'redirect' => null,
+        ]);
 
         $key = Str::random(32);
         $app['config']->set('app.key', $key);
@@ -62,6 +70,14 @@ abstract class TestCase extends BaseTestCase
             \SocialiteProviders\Manager\ServiceProvider::class,
             IdentitiesServiceProvider::class
         ];
+    }
+
+    protected function activateSocialiteExtensions()
+    {
+        $socialiteWasCalled = $this->app->make(SocialiteWasCalled::class);
+
+        $this->app->make(GitLabExtendSocialite::class)->handle($socialiteWasCalled);
+        $this->app->make(DropboxExtendSocialite::class)->handle($socialiteWasCalled);
     }
 
     public function assertListenerIsAttachedToEvent($listener, $event)
