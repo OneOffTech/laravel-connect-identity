@@ -2,19 +2,18 @@
 
 namespace Oneofftech\Identities\Auth;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Validation\ValidationException;
 use Oneofftech\Identities\Facades\Identity;
-use Oneofftech\Identities\Facades\IdentityCrypt;
+use Oneofftech\Identities\Support\FindIdentity;
 use Oneofftech\Identities\Support\InteractsWithPreviousUrl;
 
 trait AuthenticatesUsersWithIdentity
 {
-    use RedirectsUsers, InteractsWithPreviousUrl;
+    use RedirectsUsers, InteractsWithPreviousUrl, FindIdentity;
 
     /**
      * Redirect the user to the provider authentication page.
@@ -69,18 +68,6 @@ trait AuthenticatesUsersWithIdentity
         $this->guard()->login($user /*, $remember = false*/);
             
         return $this->sendLoginResponse($request);
-    }
-
-    /**
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
-     */
-    protected function findUserFromIdentity($identity, $provider)
-    {
-        try {
-            return Identity::findUserByIdentity($provider, IdentityCrypt::hash($identity->getId()));
-        } catch (ModelNotFoundException $mntfex) {
-            return null;
-        }
     }
 
     /**

@@ -66,6 +66,11 @@ class Identity extends Facade
             ->name("oneofftech::register.provider");
         $router->get('register-via/{provider}/callback', "$namespace\Http\Controllers\Identities\Auth\RegisterController@register")
             ->name("oneofftech::register.callback");
+        
+        $router->get('connect-via/{provider}', "$namespace\Http\Controllers\Identities\Auth\ConnectController@redirect")
+            ->name("oneofftech::connect.provider");
+        $router->get('connect-via/{provider}/callback', "$namespace\Http\Controllers\Identities\Auth\ConnectController@connect")
+            ->name("oneofftech::connect.callback");
     }
 
     /**

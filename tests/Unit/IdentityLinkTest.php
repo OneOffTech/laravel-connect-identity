@@ -69,6 +69,16 @@ class IdentityLinkTest extends TestCase
         $this->assertStringContainsString('My label', $view);
     }
 
+    public function test_connect_link_rendered()
+    {
+        $component = new IdentityLink('gitlab', 'connect', 'My label');
+
+        $view = $this->render($component);
+
+        $this->assertStringContainsString('http://localhost/connect-via/gitlab', $view);
+        $this->assertStringContainsString('My label', $view);
+    }
+
     private function render(Component $component)
     {
         return view($component->resolveView(), $component->data())->render();

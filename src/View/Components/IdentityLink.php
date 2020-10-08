@@ -8,11 +8,12 @@ use InvalidArgumentException;
 
 class IdentityLink extends Component
 {
-    private static $availableActions = ['register', 'login'];
+    private static $availableActions = ['register', 'login', 'connect'];
     
     private static $actionLabels = [
         'register' => 'Register via :Provider',
-        'login' => 'Log in via :Provider'
+        'login' => 'Log in via :Provider',
+        'connect' => 'Connect :Provider',
     ];
 
     /**
