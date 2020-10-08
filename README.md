@@ -16,10 +16,11 @@ as well as the community driven [Socialite Providers](https://socialiteproviders
 
 - Handle user registration via third party providers;
 - Handle user log in via third party providers;
+- Allow existing user to link a third party identity;
 - Customizable controllers, migration and models that will live in your application namespace;
 - Save identity and token inside the database, using
   [encryption and pseudoanonimization](#how-data-is-stored-in-the-database);
-- Provide login/register button as Blade component;
+- Provide login/register/connect button as Blade component;
 - Support all [Laravel Socialite](https://laravel.com/docs/socialite)
   and [Socialite Providers](https://socialiteproviders.com/);
 - Add custom providers.
@@ -130,7 +131,7 @@ however we provide a Blade Component to quickly add login and register links/but
     class="button button--primary" />
 ```
 
-The available `action`s are `login` and `register`. The `provider` refers to what
+The available `action`s are `login`, `connect` and `register`. The `provider` refers to what
 identity provider to use, the name of the provider is the same as the Socialite
 providers' name. See [Blade components](https://laravel.com/docs/blade#components) for more.
 

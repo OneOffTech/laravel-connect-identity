@@ -2,23 +2,20 @@
 
 namespace Oneofftech\Identities\Auth;
 
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\RedirectsUsers;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Oneofftech\Identities\Facades\IdentityCrypt;
-use Illuminate\Validation\ValidationException;
-use Laravel\Socialite\AbstractUser as SocialiteUser;
 use Oneofftech\Identities\Facades\Identity;
+use Oneofftech\Identities\Support\FindIdentity;
 use Oneofftech\Identities\Support\InteractsWithPreviousUrl;
 use Oneofftech\Identities\Support\InteractsWithAdditionalAttributes;
 
-trait RegistersUsersWithIdentity
+trait ConnectUserIdentity
 {
-    use RedirectsUsers, InteractsWithPreviousUrl, InteractsWithAdditionalAttributes;
+    use RedirectsUsers, InteractsWithPreviousUrl, InteractsWithAdditionalAttributes, FindIdentity;
 
     /**
      * Redirect the user to the Authentication provider authentication page.
@@ -37,16 +34,18 @@ trait RegistersUsersWithIdentity
         $this->pushAttributes($request);
 
         return Identity::driver($provider)
-            ->redirectUrl(route('oneofftech::register.callback', ['provider' => $provider]))
+            ->redirectUrl(route('oneofftech::connect.callback', ['provider' => $provider]))
             ->redirect();
     }
 
     /**
      * Obtain the user information from Authentication provider.
      *
+     * if the identity exists it will be updated, otherwise a new identity will be created
+     *
      * @return \Illuminate\Http\Response
      */
-    public function register(Request $request, $provider)
+    public function connect(Request $request, $provider)
     {
         // Load the previous url from the
         // session to redirect back in
@@ -54,7 +53,7 @@ trait RegistersUsersWithIdentity
         $previous_url = $this->getPreviousUrl();
 
         $oauthUser = Identity::driver($provider)
-            ->redirectUrl(route('oneofftech::register.callback', ['provider' => $provider]))
+            ->redirectUrl(route('oneofftech::connect.callback', ['provider' => $provider]))
             ->user();
 
         // if user denies the authorization request we get
@@ -66,55 +65,19 @@ trait RegistersUsersWithIdentity
         // Client error: `POST https://gitlab/oauth/token` resulted in a `401 Unauthorized`
         // response: {"error":"invalid_grant","error_description":"The provided authorization grant is invalid, expired, revoked, does not ma (truncated...)
 
-        /**
-         * @var \Illuminate\Contracts\Validation\Validator
-         */
-        $validator = $this->validator($this->map($request, $oauthUser));
+        $user = $request->user();
 
-        if ($validator->fails()) {
+        // create or update the user's identity
 
-            // throw a validation error that uses
-            // $provider as the key
+        list($user, $identity) = DB::transaction(function () use ($user, $provider, $oauthUser) {
+            $identity = $this->createIdentity($user, $provider, $oauthUser);
 
-            throw ValidationException::withMessages([
-                "$provider" => Arr::flatten($validator->errors()->all()),
-            ])->redirectTo($previous_url);
-        }
-
-        $data = $validator->validated();
-
-        // create user and associate the identity
-
-        $user = DB::transaction(function () use ($data, $provider, $oauthUser) {
-            $user = $this->create($data);
-    
-            $this->createIdentity($user, $provider, $oauthUser);
-
-            return $user;
+            return [$user, $identity];
         });
 
-        event(new Registered($user));
-        
-        $this->guard()->login($user /*, $remember = false*/);
+        // todo: event(new Connected($user, $identity));
             
-        return $this->sendRegistrationResponse($request, $provider);
-    }
-
-    /**
-     * Maps the socialite user to attributes
-     *
-     * @param SocialiteUser $oauthUser
-     * @return array
-     */
-    protected function map(Request $request, SocialiteUser $oauthUser)
-    {
-        $user = [
-            'name' => $oauthUser->getName() ?? $oauthUser->getNickname(),
-            'email' => $oauthUser->getEmail(),
-            'avatar' => $oauthUser->getAvatar(),
-        ];
-
-        return array_merge($user, $this->pullAttributes($request));
+        return $this->sendConnectionResponse($request, $identity);
     }
 
     protected function createIdentity($user, $provider, $oauthUser)
@@ -123,21 +86,21 @@ trait RegistersUsersWithIdentity
             [
             'provider'=> $provider,
             'provider_id'=> IdentityCrypt::hash($oauthUser->getId())
-        ],
+            ],
             [
             'token'=> IdentityCrypt::encryptString($oauthUser->token),
             'refresh_token'=> IdentityCrypt::encryptString($oauthUser->refreshToken),
             'expires_at'=> $oauthUser->expiresIn ? now()->addSeconds($oauthUser->expiresIn) : null,
             'registration' => true,
-        ]
+            ]
         );
     }
 
-    protected function sendRegistrationResponse(Request $request, $provider)
+    protected function sendConnectionResponse(Request $request, $identity)
     {
         $request->session()->regenerate();
 
-        if ($response = $this->registered($request, $this->guard()->user(), $provider)) {
+        if ($response = $this->connected($this->guard()->user(), $identity, $this->pullAttributes($request), $request)) {
             return $response;
         }
 
@@ -145,18 +108,21 @@ trait RegistersUsersWithIdentity
     }
 
     /**
-     * The user has been registered.
+     * The user identity has been connected.
      *
      * @param  mixed  $user
+     * @param  mixed  $identity
+     * @param  array  $attributes
+     * @param  \Illuminate\Http\Request  $request
      * @return mixed
      */
-    protected function registered(Request $request, $user, $provider)
+    protected function connected($user, $identity, array $attributes, Request $request)
     {
         //
     }
-    
+
     /**
-     * Get the guard to be used during authentication.
+     * Get the guard to retrieve currently authenticated user.
      *
      * @return \Illuminate\Contracts\Auth\StatefulGuard
      */
