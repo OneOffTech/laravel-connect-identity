@@ -4,16 +4,18 @@ namespace Oneofftech\Identities\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Support\Facades\DB;
 use Oneofftech\Identities\Facades\IdentityCrypt;
 use Oneofftech\Identities\Facades\Identity;
-use Oneofftech\Identities\Support\InteractsWithPreviousUrl;
 use Oneofftech\Identities\Support\FindIdentity;
+use Oneofftech\Identities\Support\InteractsWithPreviousUrl;
+use Oneofftech\Identities\Support\InteractsWithAdditionalAttributes;
 
 trait ConnectUserIdentity
 {
-    use RedirectsUsers, InteractsWithPreviousUrl, FindIdentity;
+    use RedirectsUsers, InteractsWithPreviousUrl, InteractsWithAdditionalAttributes, FindIdentity;
 
     /**
      * Redirect the user to the Authentication provider authentication page.
@@ -98,7 +100,7 @@ trait ConnectUserIdentity
     {
         $request->session()->regenerate();
 
-        if ($response = $this->connected($request, $this->guard()->user(), $identity)) {
+        if ($response = $this->connected($this->guard()->user(), $identity, $this->pullAttributes($request), $request)) {
             return $response;
         }
 
@@ -110,53 +112,22 @@ trait ConnectUserIdentity
      *
      * @param  mixed  $user
      * @param  mixed  $identity
+     * @param  array  $attributes
+     * @param  \Illuminate\Http\Request  $request
      * @return mixed
      */
-    protected function connected(Request $request, $user, $identity)
+    protected function connected($user, $identity, array $attributes, Request $request)
     {
         //
     }
 
     /**
-     * The attributes that should be retrieved from
-     * the request to append to the redirect
+     * Get the guard to retrieve currently authenticated user.
      *
-     * @var array
+     * @return \Illuminate\Contracts\Auth\StatefulGuard
      */
-    protected function redirectAttributes()
+    protected function guard()
     {
-        if (method_exists($this, 'attributes')) {
-            return $this->attributes();
-        }
-
-        return property_exists($this, 'attributes') ? $this->attributes : [];
-    }
-
-    protected function pushAttributes($request)
-    {
-        $attributes = $this->redirectAttributes() ?? [];
-
-        if (empty($attributes)) {
-            return;
-        }
-        
-        $request->session()->put('_oot.identities.attributes', json_encode($request->only($attributes)));
-    }
-
-    protected function pullAttributes($request)
-    {
-        $attributes = $this->redirectAttributes() ?? [];
-
-        if (empty($attributes)) {
-            return [];
-        }
-
-        $savedAttributes = $request->session()->pull('_oot.identities.attributes') ?? null;
-
-        if (! $savedAttributes) {
-            return [];
-        }
-
-        return json_decode($savedAttributes, true);
+        return Auth::guard();
     }
 }
