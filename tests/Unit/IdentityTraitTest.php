@@ -132,4 +132,24 @@ class IdentityTraitTest extends TestCase
 
         $this->assertNull($user);
     }
+
+    public function test_find_user()
+    {
+        IdentityFacade::useNamespace("Tests\\Fixtures\\");
+        IdentityFacade::useIdentityModel("Tests\\Fixtures\\Identity");
+        IdentityFacade::useUserModel("Tests\\Fixtures\\User");
+        
+        $expectedUser = tap((new User), function ($u) {
+            $u->forceFill([
+                'email' => 'user@local.local',
+                'name' => 'User',
+                'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+                'remember_token' => Str::random(10),
+            ])->save();
+        });
+
+        $user = IdentityFacade::findUserByIdOrFail($expectedUser->getKey());
+
+        $this->assertTrue($expectedUser->is($user));
+    }
 }

@@ -93,7 +93,8 @@ class Identity extends Facade
      */
     public static function findUserByIdOrFail(string $id)
     {
-        return static::newUserModel()->where('id', $id)->firstOrFail();
+        $model = static::newUserModel();
+        return $model->where($model->getKeyName(), $id)->firstOrFail();
     }
 
     /**
