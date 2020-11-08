@@ -58,9 +58,9 @@ abstract class TestCase extends BaseTestCase
         ]);
 
         $key = Str::random(32);
-        $app['config']->set('app.key', $key);
+        $app['config']->set('app.key', 'base64:'.base64_encode($key));
         $app['config']->set('app.cipher', 'AES-256-CBC');
-        $app['config']->set('identities.key', $key);
+        $app['config']->set('identities.key', 'base64:'.base64_encode($key));
     }
     
     /**

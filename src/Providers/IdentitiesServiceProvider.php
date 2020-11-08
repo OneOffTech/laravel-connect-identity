@@ -38,7 +38,9 @@ class IdentitiesServiceProvider extends ServiceProvider
             $config = $app->make('config')->get('identities');
             $app_config = $app->make('config')->get('app');
 
-            if (Str::startsWith($key = $config['key'], 'base64:')) {
+            $key = $config['key'] ?? $app_config['key'];
+
+            if (Str::startsWith($key, 'base64:')) {
                 $key = base64_decode(substr($key, 7));
             }
 
