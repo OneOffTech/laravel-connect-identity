@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Illuminate\Events\Dispatcher;
 use Laravel\Socialite\SocialiteServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
+use Oneofftech\Identities\Facades\Identity as IdentityFacade;
 use Oneofftech\Identities\Providers\IdentitiesServiceProvider;
 use SocialiteProviders\Dropbox\DropboxExtendSocialite;
 use SocialiteProviders\GitLab\GitLabExtendSocialite;
@@ -21,6 +22,8 @@ abstract class TestCase extends BaseTestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        $this->setUpDatabase($this->app);
 
         $this->activateSocialiteExtensions();
     }
@@ -70,6 +73,20 @@ abstract class TestCase extends BaseTestCase
             \SocialiteProviders\Manager\ServiceProvider::class,
             IdentitiesServiceProvider::class
         ];
+    }
+
+    /**
+     * @param \Illuminate\Foundation\Application $app
+     */
+    protected function setUpDatabase($app)
+    {
+        $this->loadLaravelMigrations();
+
+        $this->loadMigrationsFrom(__DIR__.'/../stubs/migrations');
+
+        IdentityFacade::useNamespace("App");
+        IdentityFacade::useIdentityModel("App\\Identity");
+        IdentityFacade::useUserModel("App\\User");
     }
 
     protected function activateSocialiteExtensions()
