@@ -23,7 +23,9 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->setUpDatabase($this->app);
+        $this->setUpDatabase();
+        
+        $this->setUpSession($this->app);
 
         $this->activateSocialiteExtensions();
     }
@@ -75,10 +77,7 @@ abstract class TestCase extends BaseTestCase
         ];
     }
 
-    /**
-     * @param \Illuminate\Foundation\Application $app
-     */
-    protected function setUpDatabase($app)
+    protected function setUpDatabase()
     {
         $this->loadLaravelMigrations();
 
@@ -87,6 +86,12 @@ abstract class TestCase extends BaseTestCase
         IdentityFacade::useNamespace("App");
         IdentityFacade::useIdentityModel("App\\Identity");
         IdentityFacade::useUserModel("App\\User");
+    }
+
+    protected function setUpSession()
+    {
+        $kernel = $this->app->make('Illuminate\Contracts\Http\Kernel');
+        $kernel->pushMiddleware('Illuminate\Session\Middleware\StartSession');
     }
 
     protected function activateSocialiteExtensions()
