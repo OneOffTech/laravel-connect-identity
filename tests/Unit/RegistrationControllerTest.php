@@ -2,16 +2,16 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use SocialiteProviders\GitLab\Provider;
 use Mockery;
-use Oneofftech\Identities\Facades\Identity as IdentityFacade;
-use Oneofftech\Identities\Facades\IdentityCrypt;
-use SocialiteProviders\Manager\OAuth2\User as OauthUser;
+use Tests\TestCase;
 use Tests\Fixtures\User;
-use Illuminate\Validation\ValidationException;
+use SocialiteProviders\GitLab\Provider;
 use Tests\Fixtures\Concern\UseTestFixtures;
+use Illuminate\Validation\ValidationException;
+use Oneofftech\Identities\Facades\IdentityCrypt;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Oneofftech\Identities\Facades\Identity as IdentityFacade;
+use SocialiteProviders\Manager\OAuth2\User as OauthUser;
 
 class RegistrationControllerTest extends TestCase
 {
