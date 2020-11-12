@@ -10,16 +10,15 @@ use Oneofftech\Identities\Facades\Identity as IdentityFacade;
 use Oneofftech\Identities\Facades\IdentityCrypt;
 use SocialiteProviders\Manager\OAuth2\User as OauthUser;
 use Tests\Fixtures\User;
+use Illuminate\Validation\ValidationException;
+use Tests\Fixtures\Concern\UseTestFixtures;
 
 class RegistrationControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, UseTestFixtures;
 
     public function test_redirect_to_provider()
     {
-        IdentityFacade::useNamespace('Tests\\Fixtures');
-        IdentityFacade::routes();
-
         $response = $this->get(route('oneofftech::register.provider', ['provider' => 'gitlab']));
 
         $response->assertRedirect();
@@ -30,11 +29,9 @@ class RegistrationControllerTest extends TestCase
         $this->assertStringContainsString(route('oneofftech::register.callback', ['provider' => 'gitlab']), $location);
     }
 
-    public function test_callback()
+    public function test_user_can_be_registered()
     {
         IdentityFacade::useIdentityModel('Tests\\Fixtures\\Identity');
-        IdentityFacade::useNamespace('Tests\\Fixtures');
-        IdentityFacade::routes();
 
         $this->withoutExceptionHandling();
 
@@ -75,5 +72,33 @@ class RegistrationControllerTest extends TestCase
         $this->assertEquals(IdentityCrypt::hash('U1'), $firstIdentity->provider_id);
         $this->assertEquals('gitlab', $firstIdentity->provider);
         $this->assertNotNull($firstIdentity->token);
+    }
+
+    public function test_user_cannot_register_twice()
+    {
+        $this->createUser();
+
+        $this->withoutExceptionHandling();
+
+        $driverMock = Mockery::mock(Provider::class)->makePartial();
+
+        $oauthFakeUser = (new OauthUser())->map([
+            'id'       => 'U1',
+            'nickname' => 'User',
+            'name'     => 'User',
+            'email'    => 'user@local.com',
+            'avatar'   => 'https://gitlab.com',
+            'token'   => 'T1',
+        ]);
+        
+        $driverMock->shouldReceive('user')->andReturn($oauthFakeUser);
+
+        $driverMock->shouldReceive('redirectUrl')->andReturn($driverMock);
+
+        IdentityFacade::shouldReceive('driver')->with('gitlab')->andReturn($driverMock);
+
+        $this->expectException(ValidationException::class);
+
+        $this->get(route('oneofftech::register.callback', ['provider' => 'gitlab']));
     }
 }

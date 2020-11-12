@@ -12,6 +12,8 @@ use Oneofftech\Identities\Providers\IdentitiesServiceProvider;
 use SocialiteProviders\Dropbox\DropboxExtendSocialite;
 use SocialiteProviders\GitLab\GitLabExtendSocialite;
 use SocialiteProviders\Manager\SocialiteWasCalled;
+use Tests\Fixtures\Concern\UseTestFixtures;
+use Tests\Fixtures\User;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -28,6 +30,19 @@ abstract class TestCase extends BaseTestCase
         $this->setUpSession($this->app);
 
         $this->activateSocialiteExtensions();
+    }
+
+    protected function setUpTraits()
+    {
+        parent::setUpTraits();
+
+        $uses = \array_flip(\class_uses_recursive(static::class));
+
+        if (isset($uses[UseTestFixtures::class])) {
+            $this->useTestFixtures();
+        }
+
+        return $uses;
     }
 
     /**
@@ -118,5 +133,17 @@ abstract class TestCase extends BaseTestCase
         }
 
         $this->assertTrue(false, sprintf('Event %s does not have the %s listener attached to it', $event, $listener));
+    }
+
+    public function createUser($data = [])
+    {
+        return tap((new User), function ($u) use ($data) {
+            $u->forceFill(array_merge([
+                'email' => 'user@local.com',
+                'name' => 'User',
+                'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+                'remember_token' => Str::random(10),
+            ], $data))->save();
+        });
     }
 }
