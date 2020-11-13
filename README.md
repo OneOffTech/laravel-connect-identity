@@ -1,5 +1,5 @@
 
-# Laravel Connect Identity
+# Connect Identity for Laravel
 
 ![CI](https://github.com/OneOffTech/laravel-connect-identity/workflows/CI/badge.svg)
 
@@ -234,14 +234,17 @@ Here is how sensible data is stored:
 specify your old key inside `OLD_IDENTITY_KEY` to be able to still read encrypted values.
 
 > **Warning** as of now no automated job is available for re-encrypting data with the new key. 
-This operation happens during a login or a registration process as part of the token update.
+This operation happens during registration or while connecting an identity as part of the token update.
 
 
 ## Contributing
 
-All types of contribution are accepted, bug-fix, documentation updates, new features!
+Thank you for considering contributing to the Connect Identity for Laravel! 
+You can find how to get started in our [contribution guide](./CONTRIBUTING.md).
 
-We will have a contributing page soon, but meanwhile you can submit Pull Requests.
+## Security Vulnerabilities
+
+Please review our [security policy](./SECURITY.md) on how to report security vulnerabilities.
 
 ## License
 
