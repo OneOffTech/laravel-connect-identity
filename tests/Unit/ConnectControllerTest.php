@@ -2,16 +2,22 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Auth\AuthenticationException;
+use Mockery;
+use Carbon\Carbon;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Oneofftech\Identities\Facades\Identity as IdentityFacade;
 use Tests\Fixtures\User;
 use Illuminate\Support\Str;
+use SocialiteProviders\GitLab\Provider;
+use Tests\Fixtures\Concern\UseTestFixtures;
+use Illuminate\Auth\AuthenticationException;
+use Oneofftech\Identities\Facades\IdentityCrypt;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use SocialiteProviders\Manager\OAuth2\User as OauthUser;
+use Oneofftech\Identities\Facades\Identity as IdentityFacade;
 
 class ConnectControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, UseTestFixtures;
 
     public function test_redirect_to_provider_require_authentication()
     {
@@ -54,5 +60,100 @@ class ConnectControllerTest extends TestCase
 
         $this->assertStringContainsString('gitlab.com', $location);
         $this->assertStringContainsString(route('oneofftech::connect.callback', ['provider' => 'gitlab']), $location);
+    }
+
+    public function test_connect_creates_identity()
+    {
+        $this->useTestFixtures();
+
+        $user = $this->createUser();
+
+        $this->withoutExceptionHandling();
+
+        $driverMock = Mockery::mock(Provider::class)->makePartial();
+
+        Carbon::setTestNow(Carbon::create(2020, 11, 12, 10, 20));
+
+        $oauthFakeUser = (new OauthUser())->map([
+            'id'       => 'U1',
+            'nickname' => 'User',
+            'name'     => 'User',
+            'email'    => 'user@local.com',
+            'avatar'   => 'https://gitlab.com',
+            'token'   => 'T2',
+            'refreshToken' => 'RT2',
+            'expiresIn' => Carbon::SECONDS_PER_MINUTE,
+        ]);
+        
+        $driverMock->shouldReceive('user')->andReturn($oauthFakeUser);
+
+        $driverMock->shouldReceive('redirectUrl')->andReturn($driverMock);
+
+        IdentityFacade::shouldReceive('driver')->with('gitlab')->andReturn($driverMock);
+
+        $response = $this->actingAs($user)
+            ->get(route('oneofftech::connect.callback', ['provider' => 'gitlab']));
+
+        $response->assertRedirect('http://localhost/home');
+
+        $updatedIdentity = $user->identities->first();
+
+        $this->assertEquals(IdentityCrypt::hash('U1'), $updatedIdentity->provider_id);
+        $this->assertEquals('gitlab', $updatedIdentity->provider);
+        $this->assertEquals(Carbon::create(2020, 11, 12, 10, 21), $updatedIdentity->expires_at);
+        $this->assertEquals('T2', IdentityCrypt::decryptString($updatedIdentity->token));
+        $this->assertEquals('RT2', IdentityCrypt::decryptString($updatedIdentity->refresh_token));
+    }
+    
+    public function test_connect_updates_existing_identity()
+    {
+        $this->useTestFixtures();
+
+        $user = $this->createUser();
+
+        $identity = $user->identities()->create([
+            'provider'=> 'gitlab',
+            'provider_id'=> IdentityCrypt::hash('U1'),
+            'token'=> 'T1',
+            'refresh_token'=> null,
+            'expires_at'=> null,
+            'registration' => true,
+        ]);
+
+        $this->withoutExceptionHandling();
+
+        $driverMock = Mockery::mock(Provider::class)->makePartial();
+
+        Carbon::setTestNow(Carbon::create(2020, 11, 12, 10, 20));
+
+        $oauthFakeUser = (new OauthUser())->map([
+            'id'       => 'U1',
+            'nickname' => 'User',
+            'name'     => 'User',
+            'email'    => 'user@local.com',
+            'avatar'   => 'https://gitlab.com',
+            'token'   => 'T2',
+            'refreshToken' => 'RT2',
+            'expiresIn' => Carbon::SECONDS_PER_MINUTE,
+        ]);
+        
+        $driverMock->shouldReceive('user')->andReturn($oauthFakeUser);
+
+        $driverMock->shouldReceive('redirectUrl')->andReturn($driverMock);
+
+        IdentityFacade::shouldReceive('driver')->with('gitlab')->andReturn($driverMock);
+
+        $response = $this->actingAs($user)
+            ->get(route('oneofftech::connect.callback', ['provider' => 'gitlab']));
+
+        $response->assertRedirect('http://localhost/home');
+
+        $updatedIdentity = $user->identities->first();
+
+        $this->assertEquals($identity->provider_id, $updatedIdentity->provider_id);
+        $this->assertEquals('gitlab', $updatedIdentity->provider);
+        $this->assertEquals(Carbon::create(2020, 11, 12, 10, 21), $updatedIdentity->expires_at);
+        $this->assertEquals('T2', IdentityCrypt::decryptString($updatedIdentity->token));
+        $this->assertEquals('RT2', IdentityCrypt::decryptString($updatedIdentity->refresh_token));
     }
 }
