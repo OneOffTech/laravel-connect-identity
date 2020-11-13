@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 trait FindIdentity
 {
     /**
+     * Search a user given its identity in the third party provider
+     *
+     * @param \Laravel\Socialite\Contracts\User $identity Third party identity provided by Laravel Socialite
+     * @param string $provider The identity provider name
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
     protected function findUserFromIdentity($identity, $provider)
