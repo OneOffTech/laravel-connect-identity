@@ -8,4 +8,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use WithIdentities;
+
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+    ];
 }

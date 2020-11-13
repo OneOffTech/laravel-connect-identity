@@ -11,11 +11,21 @@ use SocialiteProviders\GitLab\GitLabExtendSocialite;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use InvalidArgumentException;
 use Laravel\Socialite\Two\FacebookProvider;
+use Oneofftech\Identities\Providers\IdentitiesServiceProvider;
 use SocialiteProviders\GitLab\Provider as GitlabSocialiteProvider;
 
 class IdentityServiceProviderTest extends TestCase
 {
     use DatabaseMigrations;
+
+    public function test_default_driver_cannot_not_configured()
+    {
+        $factory = $this->app->make(IdentitiesManager::class);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $factory->redirect();
+    }
 
     public function test_it_can_instantiate_the_gitlab_driver()
     {
@@ -100,5 +110,12 @@ class IdentityServiceProviderTest extends TestCase
     public function test_facade_return_manager_instance()
     {
         $this->assertInstanceOf(IdentitiesManager::class, Identity::getFacadeRoot());
+    }
+
+    public function test_provider_lists_provided_services()
+    {
+        $provides = (new IdentitiesServiceProvider($this->app))->provides();
+
+        $this->assertEquals([IdentitiesManager::class], $provides);
     }
 }
