@@ -1,0 +1,85 @@
+version: '3'
+
+networks:
+  internal:
+  web:
+    external:
+      name: proxy_traefik_web
+
+
+services:
+
+  db:
+    image: mariadb:10
+    environment:
+      MYSQL_DATABASE: owncloud
+      MYSQL_USER: owncloud
+      MYSQL_ROOT_PASSWORD: "2381aa6a99bee6ff61c2209ef4373887"
+      MYSQL_PASSWORD: owncloud
+    networks:
+      - internal
+    volumes:
+      - "./storage/database:/var/lib/mysql"
+
+  app:
+    image: owncloud/server:10.5
+    # ports:
+    #   - 8080:8080
+    depends_on:
+      - db
+    environment:
+      - OWNCLOUD_DOMAIN=owncloud.test.oneofftech.xyz
+      - OWNCLOUD_DB_TYPE=mysql
+      - OWNCLOUD_DB_NAME=owncloud
+      - OWNCLOUD_DB_USERNAME=owncloud
+      - OWNCLOUD_DB_PASSWORD=owncloud
+      - OWNCLOUD_DB_HOST=db
+      - OWNCLOUD_ADMIN_USERNAME=admin@owncloud.test.oneofftech.xyz
+      - OWNCLOUD_ADMIN_PASSWORD=oot.test
+      - OWNCLOUD_MYSQL_UTF8MB4=true
+    networks:
+      - internal
+      - web
+    volumes:
+      - ./onlyoffice:/tmp/onlyoffice
+      - "./storage/owncloud:/mnt/data"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.owncloud.rule=Host(`owncloud.test.oneofftech.xyz`)"
+      - "traefik.http.routers.owncloud.entrypoints=websecure"
+      - "traefik.http.routers.owncloud.tls=true"
+      - "traefik.http.routers.owncloud.tls.certresolver=mytls"
+      - "traefik.http.routers.owncloud.service=owncloud"
+      - "traefik.http.services.owncloud.loadbalancer.server.port=8080"
+      - "traefik.http.routers.owncloud.middlewares=owncloud"
+      - "traefik.http.middlewares.owncloud.headers.accesscontrolallowmethods=GET,OPTIONS,PUT"
+      - "traefik.http.middlewares.owncloud.headers.accesscontrolalloworigin=*"
+      - "traefik.http.middlewares.owncloud.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.owncloud.headers.addvaryheader=true"
+      - "traefik.http.middlewares.owncloud.headers.customRequestHeaders.X-Forwarded-Proto=https"
+
+
+
+
+  onlyoffice:
+    image: onlyoffice/documentserver:6.0
+    networks:
+      - internal
+      - web
+    volumes:
+      - "./storage/onlyoffice/data:/var/www/onlyoffice/Data"
+      - "./storage/onlyoffice/log:/var/log/onlyoffice"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.onlyoffice.rule=Host(`office.test.oneofftech.xyz`)"
+      - "traefik.http.routers.onlyoffice.entrypoints=websecure"
+      - "traefik.http.routers.onlyoffice.tls=true"
+      - "traefik.http.routers.onlyoffice.tls.certresolver=mytls"
+      - "traefik.http.routers.onlyoffice.service=onlyoffice"
+      - "traefik.http.services.onlyoffice.loadbalancer.server.port=80"
+      - "traefik.http.routers.onlyoffice.middlewares=onlyoffice"
+      - "traefik.http.middlewares.onlyoffice.headers.accesscontrolallowmethods=GET,OPTIONS,PUT"
+      - "traefik.http.middlewares.onlyoffice.headers.accesscontrolalloworigin=*"
+      - "traefik.http.middlewares.onlyoffice.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.onlyoffice.headers.addvaryheader=true"
+      - "traefik.http.middlewares.onlyoffice.headers.customRequestHeaders.X-Forwarded-Proto=https"
