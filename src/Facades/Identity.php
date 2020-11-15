@@ -57,17 +57,17 @@ class Identity extends Facade
 
         $namespace = '\\'.rtrim(self::$appNamespace, '\\');
 
-        $router->get('login-via/{provider}', "$namespace\Http\Controllers\Identities\Auth\LoginController@redirect")
+        $router->match(['get', 'post'], 'login-via/{provider}', "$namespace\Http\Controllers\Identities\Auth\LoginController@redirect")
             ->name("oneofftech::login.provider");
         $router->get('login-via/{provider}/callback', "$namespace\Http\Controllers\Identities\Auth\LoginController@login")
             ->name("oneofftech::login.callback");
         
-        $router->get('register-via/{provider}', "$namespace\Http\Controllers\Identities\Auth\RegisterController@redirect")
+        $router->match(['get', 'post'], 'register-via/{provider}', "$namespace\Http\Controllers\Identities\Auth\RegisterController@redirect")
             ->name("oneofftech::register.provider");
         $router->get('register-via/{provider}/callback', "$namespace\Http\Controllers\Identities\Auth\RegisterController@register")
             ->name("oneofftech::register.callback");
         
-        $router->get('connect-via/{provider}', "$namespace\Http\Controllers\Identities\Auth\ConnectController@redirect")
+        $router->match(['get', 'post'], 'connect-via/{provider}', "$namespace\Http\Controllers\Identities\Auth\ConnectController@redirect")
             ->name("oneofftech::connect.provider");
         $router->get('connect-via/{provider}/callback', "$namespace\Http\Controllers\Identities\Auth\ConnectController@connect")
             ->name("oneofftech::connect.callback");
