@@ -89,15 +89,15 @@ class IdentityServiceProviderTest extends TestCase
         $this->assertTrue($router->has('oneofftech::connect.callback'));
 
         $routes = collect($router->getRoutes()->getRoutes())->map(function ($r) {
-            return $r->getActionName();
+            return implode(',', $r->methods()).':'.$r->getActionName();
         });
 
-        $this->assertContains('\App\Http\Controllers\Identities\Auth\LoginController@redirect', $routes);
-        $this->assertContains('\App\Http\Controllers\Identities\Auth\LoginController@login', $routes);
-        $this->assertContains('\App\Http\Controllers\Identities\Auth\RegisterController@redirect', $routes);
-        $this->assertContains('\App\Http\Controllers\Identities\Auth\RegisterController@register', $routes);
-        $this->assertContains('\App\Http\Controllers\Identities\Auth\ConnectController@redirect', $routes);
-        $this->assertContains('\App\Http\Controllers\Identities\Auth\ConnectController@connect', $routes);
+        $this->assertContains('GET,POST,HEAD:\App\Http\Controllers\Identities\Auth\LoginController@redirect', $routes);
+        $this->assertContains('GET,HEAD:\App\Http\Controllers\Identities\Auth\LoginController@login', $routes);
+        $this->assertContains('GET,POST,HEAD:\App\Http\Controllers\Identities\Auth\RegisterController@redirect', $routes);
+        $this->assertContains('GET,HEAD:\App\Http\Controllers\Identities\Auth\RegisterController@register', $routes);
+        $this->assertContains('GET,POST,HEAD:\App\Http\Controllers\Identities\Auth\ConnectController@redirect', $routes);
+        $this->assertContains('GET,HEAD:\App\Http\Controllers\Identities\Auth\ConnectController@connect', $routes);
     }
 
     public function test_events_are_registered()
