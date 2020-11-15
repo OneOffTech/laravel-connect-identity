@@ -35,7 +35,9 @@ class IdentitiesManager extends Manager
         return Socialite::with('gitlab')
             ->scopes([
                 'openid',
-                'read_api',
+                'read_user',
+                'profile',
+                'email',
                 // todo: make scopes configurable
             ]);
     }
