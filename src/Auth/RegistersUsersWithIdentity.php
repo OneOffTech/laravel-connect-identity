@@ -121,15 +121,15 @@ trait RegistersUsersWithIdentity
     {
         return $user->identities()->updateOrCreate(
             [
-            'provider'=> $provider,
-            'provider_id'=> IdentityCrypt::hash($oauthUser->getId())
-        ],
+                'provider'=> $provider,
+                'provider_id'=> IdentityCrypt::hash($oauthUser->getId())
+            ],
             [
-            'token'=> IdentityCrypt::encryptString($oauthUser->token),
-            'refresh_token'=> IdentityCrypt::encryptString($oauthUser->refreshToken),
-            'expires_at'=> $oauthUser->expiresIn ? now()->addSeconds($oauthUser->expiresIn) : null,
-            'registration' => true,
-        ]
+                'token'=> IdentityCrypt::encryptString($oauthUser->token),
+                'refresh_token'=> IdentityCrypt::encryptString($oauthUser->refreshToken),
+                'expires_at'=> $oauthUser->expiresIn ? now()->addSeconds($oauthUser->expiresIn) : null,
+                'registration' => true,
+            ]
         );
     }
 
