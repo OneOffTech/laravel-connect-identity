@@ -72,6 +72,7 @@ class RegistrationControllerTest extends TestCase
         $this->assertEquals(IdentityCrypt::hash('U1'), $firstIdentity->provider_id);
         $this->assertEquals('gitlab', $firstIdentity->provider);
         $this->assertNotNull($firstIdentity->token);
+        $this->assertTrue($firstIdentity->registration);
     }
 
     public function test_user_cannot_register_twice()

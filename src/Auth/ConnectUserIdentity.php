@@ -91,7 +91,7 @@ trait ConnectUserIdentity
             'token'=> IdentityCrypt::encryptString($oauthUser->token),
             'refresh_token'=> IdentityCrypt::encryptString($oauthUser->refreshToken),
             'expires_at'=> $oauthUser->expiresIn ? now()->addSeconds($oauthUser->expiresIn) : null,
-            'registration' => true,
+            'registration' => false,
             ]
         );
     }

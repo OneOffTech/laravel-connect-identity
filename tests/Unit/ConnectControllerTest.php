@@ -103,6 +103,7 @@ class ConnectControllerTest extends TestCase
         $this->assertEquals(Carbon::create(2020, 11, 12, 10, 21), $updatedIdentity->expires_at);
         $this->assertEquals('T2', IdentityCrypt::decryptString($updatedIdentity->token));
         $this->assertEquals('RT2', IdentityCrypt::decryptString($updatedIdentity->refresh_token));
+        $this->assertFalse($updatedIdentity->registration);
     }
     
     public function test_connect_updates_existing_identity()
