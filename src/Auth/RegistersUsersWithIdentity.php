@@ -6,7 +6,6 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Oneofftech\Identities\Facades\IdentityCrypt;
