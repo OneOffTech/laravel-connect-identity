@@ -5,7 +5,6 @@ namespace Oneofftech\Identities\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Support\Facades\DB;
 use Oneofftech\Identities\Facades\IdentityCrypt;
 use Oneofftech\Identities\Facades\Identity;
