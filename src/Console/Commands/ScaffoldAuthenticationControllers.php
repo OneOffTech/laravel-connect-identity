@@ -40,6 +40,13 @@ class ScaffoldAuthenticationControllers extends Command
     protected $namespace = null;
 
     /**
+     * Models namespace
+     *
+     * @var string
+     */
+    protected $modelNamespace = null;
+
+    /**
      * @var Illuminate\Filesystem\Filesystem
      */
     protected $filesystem = null;
@@ -54,6 +61,8 @@ class ScaffoldAuthenticationControllers extends Command
         parent::__construct();
 
         $this->namespace = self::DEFAULT_NAMESPACE;
+        
+        $this->modelNamespace = self::DEFAULT_NAMESPACE;
 
         $this->filesystem = new Filesystem;
     }
@@ -88,6 +97,8 @@ class ScaffoldAuthenticationControllers extends Command
             if ($this->namespace !== self::DEFAULT_NAMESPACE) {
                 $this->comment("Using [$this->namespace] as application namespace.");
             }
+
+            $this->modelNamespace = is_dir(app_path('Models')) ? $this->namespace.'\\Models' : $this->namespace;
         } catch (RuntimeException $ex) {
             $this->warn("Unable to identity the application namespace, assuming [$this->namespace].");
         }
@@ -126,12 +137,12 @@ class ScaffoldAuthenticationControllers extends Command
             mkdir($directory, 0755, true);
         }
 
-        // TODO: make it Models folder aware
+        $useModelsDirectory = is_dir(app_path('Models'));
 
         collect($this->filesystem->allFiles(__DIR__.'/../../../stubs/Identities/Models'))
-            ->each(function (SplFileInfo $file) {
+            ->each(function (SplFileInfo $file) use ($useModelsDirectory) {
                 $modelName = Str::replaceLast('.stub', '.php', $file->getFilename());
-                $model = app_path($modelName);
+                $model = $useModelsDirectory ? app_path('Models/'.$modelName) : app_path($modelName);
 
                 if (file_exists($model) && ! $this->option('force')) {
                     if ($this->confirm("The [$modelName] file already exists. Do you want to replace it?")) {
@@ -188,7 +199,7 @@ class ScaffoldAuthenticationControllers extends Command
     protected function compileModelStub($stub)
     {
         $originalNamespaceDeclaration = str_replace('\\;', ';', "namespace ".self::DEFAULT_NAMESPACE.';');
-        $newNamespaceDeclaration = str_replace('\\;', ';', "namespace $this->namespace;");
+        $newNamespaceDeclaration = str_replace('\\;', ';', "namespace $this->modelNamespace;");
         
         return str_replace(
             $originalNamespaceDeclaration,

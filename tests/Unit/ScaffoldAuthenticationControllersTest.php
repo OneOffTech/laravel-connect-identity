@@ -29,7 +29,7 @@ class ScaffoldAuthenticationControllersTest extends TestCase
 
         $files = [
             base_path('database/migrations/2020_08_09_115707_create_identities_table.php'),
-            app_path('Identity.php'),
+            app_path('Models/Identity.php'),
             app_path('Http/Controllers/Identities/Auth/ConnectController.php'),
             app_path('Http/Controllers/Identities/Auth/LoginController.php'),
             app_path('Http/Controllers/Identities/Auth/RegisterController.php'),
