@@ -36,9 +36,9 @@ jobs:
         composer update --prefer-stable --prefer-dist --no-interaction --no-progress
 
     - name: Run CS Fixer
-      run: ./vendor/bin/php-cs-fixer fix --dry-run
+      run: ./vendor/bin/php-cs-fixer fix
     
-    # - name: Commit changes
-    #   uses: stefanzweifel/git-auto-commit-action@v4
-    #   with:
-    #     commit_message: Fix styling
+    - name: Commit changes
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Fix styling
