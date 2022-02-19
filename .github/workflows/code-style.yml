@@ -12,11 +12,6 @@ jobs:
     name: Check PHP code style
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: true
-      matrix:
-        php: [7.4]
-    
     steps:
     - uses: actions/checkout@v2
       with:
@@ -26,18 +21,24 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ~/.composer/cache/files
-        key: dependencies-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+        key: dependencies-php-code-style-composer-${{ hashFiles('composer.json') }}
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: ${{ matrix.php }}
+        php-version: 8.0
+        tools: composer:v2
         extensions: dom, curl, libxml, mbstring, zip
         coverage: none
       
     - name: Install dependencies
       run: |
-        composer install --prefer-dist --no-scripts
+        composer update --prefer-stable --prefer-dist --no-interaction --no-progress
 
     - name: Run CS Fixer
       run: ./vendor/bin/php-cs-fixer fix --dry-run
+    
+    # - name: Commit changes
+    #   uses: stefanzweifel/git-auto-commit-action@v4
+    #   with:
+    #     commit_message: Fix styling
