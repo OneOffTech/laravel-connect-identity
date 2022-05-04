@@ -6,7 +6,6 @@ use Tests\TestCase;
 use Oneofftech\Identities\Facades\Identity;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use InvalidArgumentException;
-use Illuminate\Support\Facades\View;
 use Illuminate\View\Component;
 use Oneofftech\Identities\View\Components\IdentityLink;
 
