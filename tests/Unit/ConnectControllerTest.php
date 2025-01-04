@@ -64,8 +64,6 @@ class ConnectControllerTest extends TestCase
 
     public function test_connect_creates_identity()
     {
-        $this->useTestFixtures();
-
         $user = $this->createUser();
 
         $this->withoutExceptionHandling();
@@ -108,8 +106,6 @@ class ConnectControllerTest extends TestCase
     
     public function test_connect_updates_existing_identity()
     {
-        $this->useTestFixtures();
-
         $user = $this->createUser();
 
         $identity = $user->identities()->create([

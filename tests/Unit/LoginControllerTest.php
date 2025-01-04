@@ -33,8 +33,6 @@ class LoginControllerTest extends TestCase
 
     public function test_user_login()
     {
-        $this->useTestFixtures();
-
         $user = $this->createUser();
 
         $identity = $user->identities()->create([
@@ -74,8 +72,6 @@ class LoginControllerTest extends TestCase
     
     public function test_user_login_denied_if_identity_cannot_be_found()
     {
-        $this->useTestFixtures();
-
         $user = $this->createUser();
 
         $identity = $user->identities()->create([

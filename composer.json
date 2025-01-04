@@ -17,22 +17,23 @@
         }
     ],
     "require": {
-        "php": "^7.3|^8.0.2",
-        "illuminate/auth": "^8.0|^9.0",
-        "illuminate/console": "^8.0|^9.0",
-        "illuminate/encryption": "^8.0|^9.0",
-        "illuminate/support": "^8.0|^9.0",
-        "illuminate/view": "^8.0|^9.0",
+        "php": "^8.2",
+        "illuminate/auth": "^10.0",
+        "illuminate/console": "^10.0",
+        "illuminate/encryption": "^10.0",
+        "illuminate/support": "^10.0",
+        "illuminate/view": "^10.0",
         "laravel/socialite": "^5.0",
-        "socialiteproviders/gitlab": "^3.1|^4.0",
+        "socialiteproviders/gitlab": "^4.0",
         "socialiteproviders/dropbox": "^4.1"
     },
     "require-dev": {
+        "laravel/pint": "^1.14",
         "fakerphp/faker": "^1.9.1",
+        "larastan/larastan": "^2.9",
         "mockery/mockery": "^1.4.4",
-        "phpunit/phpunit": "^9.5.10",
-        "orchestra/testbench": "^6.15|^7.4",
-        "friendsofphp/php-cs-fixer": "^2.16|^3.8"
+        "phpunit/phpunit": "^10.5",
+        "orchestra/testbench": "^8.22"
     },
     "autoload": {
         "psr-4": {
@@ -44,6 +45,20 @@
             "Tests\\": "tests/"
         }
 	},
+    "scripts": {
+        "post-autoload-dump": "@composer run prepare",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "analyse": "vendor/bin/phpstan analyse",
+        "test": "vendor/bin/phpunit",
+        "format": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
     "extra": {
         "laravel": {
             "providers": [

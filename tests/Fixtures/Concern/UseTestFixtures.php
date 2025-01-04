@@ -6,7 +6,7 @@ use Oneofftech\Identities\Facades\Identity as IdentityFacade;
 
 trait UseTestFixtures
 {
-    protected function useTestFixtures()
+    protected function setUpUseTestFixtures()
     {
         IdentityFacade::useUserModel("Tests\\Fixtures\\User");
         IdentityFacade::useIdentityModel('Tests\\Fixtures\\Identity');
