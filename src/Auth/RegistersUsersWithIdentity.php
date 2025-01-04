@@ -5,19 +5,19 @@ namespace Oneofftech\Identities\Auth;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Oneofftech\Identities\Facades\IdentityCrypt;
 use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\AbstractUser as SocialiteUser;
 use Oneofftech\Identities\Facades\Identity;
-use Oneofftech\Identities\Support\InteractsWithPreviousUrl;
+use Oneofftech\Identities\Facades\IdentityCrypt;
 use Oneofftech\Identities\Support\InteractsWithAdditionalAttributes;
+use Oneofftech\Identities\Support\InteractsWithPreviousUrl;
 
 trait RegistersUsersWithIdentity
 {
-    use RedirectsUsers, InteractsWithPreviousUrl, InteractsWithAdditionalAttributes;
+    use InteractsWithAdditionalAttributes, InteractsWithPreviousUrl, RedirectsUsers;
 
     /**
      * Redirect the user to the Authentication provider authentication page.
@@ -86,23 +86,22 @@ trait RegistersUsersWithIdentity
 
         $user = DB::transaction(function () use ($data, $provider, $oauthUser) {
             $user = $this->create($data);
-    
+
             $this->createIdentity($user, $provider, $oauthUser);
 
             return $user;
         });
 
         event(new Registered($user));
-        
-        $this->guard()->login($user /*, $remember = false*/);
-            
+
+        $this->guard()->login($user /* , $remember = false */);
+
         return $this->sendRegistrationResponse($request, $provider);
     }
 
     /**
      * Maps the socialite user to attributes
      *
-     * @param SocialiteUser $oauthUser
      * @return array
      */
     protected function map(Request $request, SocialiteUser $oauthUser)
@@ -120,13 +119,13 @@ trait RegistersUsersWithIdentity
     {
         return $user->identities()->updateOrCreate(
             [
-                'provider'=> $provider,
-                'provider_id'=> IdentityCrypt::hash($oauthUser->getId())
+                'provider' => $provider,
+                'provider_id' => IdentityCrypt::hash($oauthUser->getId()),
             ],
             [
-                'token'=> IdentityCrypt::encryptString($oauthUser->token),
-                'refresh_token'=> IdentityCrypt::encryptString($oauthUser->refreshToken),
-                'expires_at'=> $oauthUser->expiresIn ? now()->addSeconds($oauthUser->expiresIn) : null,
+                'token' => IdentityCrypt::encryptString($oauthUser->token),
+                'refresh_token' => IdentityCrypt::encryptString($oauthUser->refreshToken),
+                'expires_at' => $oauthUser->expiresIn ? now()->addSeconds($oauthUser->expiresIn) : null,
                 'registration' => true,
             ]
         );
@@ -153,7 +152,7 @@ trait RegistersUsersWithIdentity
     {
         //
     }
-    
+
     /**
      * Get the guard to be used during authentication.
      *

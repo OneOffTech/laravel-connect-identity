@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use Oneofftech\Identities\Encryption\Encrypter;
 use Oneofftech\Identities\Facades\IdentityCrypt;
+use Tests\TestCase;
 
 class IdentityCryptTest extends TestCase
 {
@@ -17,7 +17,7 @@ class IdentityCryptTest extends TestCase
 
         $this->assertEquals($expected, $result);
     }
-    
+
     public function test_facade_return_encrypter_instance()
     {
         $this->assertInstanceOf(Encrypter::class, IdentityCrypt::getFacadeRoot());

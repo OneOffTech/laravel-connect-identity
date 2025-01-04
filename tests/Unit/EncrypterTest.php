@@ -2,10 +2,10 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use Illuminate\Support\Str;
 use Oneofftech\Identities\Encryption\Encrypter;
 use Oneofftech\Identities\Facades\IdentityCrypt;
+use Tests\TestCase;
 
 class EncrypterTest extends TestCase
 {

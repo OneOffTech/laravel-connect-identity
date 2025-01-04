@@ -2,13 +2,13 @@
 
 namespace Tests;
 
-use ReflectionFunction;
-use Illuminate\Support\Str;
 use Illuminate\Events\Dispatcher;
+use Illuminate\Support\Str;
 use Laravel\Socialite\SocialiteServiceProvider;
-use Orchestra\Testbench\TestCase as BaseTestCase;
 use Oneofftech\Identities\Facades\Identity as IdentityFacade;
 use Oneofftech\Identities\Providers\IdentitiesServiceProvider;
+use Orchestra\Testbench\TestCase as BaseTestCase;
+use ReflectionFunction;
 use SocialiteProviders\Dropbox\DropboxExtendSocialite;
 use SocialiteProviders\GitLab\GitLabExtendSocialite;
 use SocialiteProviders\Manager\SocialiteWasCalled;
@@ -17,14 +17,13 @@ use Tests\Fixtures\User;
 
 abstract class TestCase extends BaseTestCase
 {
-
     /**
      * Setup the test environment.
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->setUpSession($this->app);
 
         $this->activateSocialiteExtensions();
@@ -56,15 +55,15 @@ abstract class TestCase extends BaseTestCase
         // Setup default database to use sqlite :memory:
         config()->set('database.default', 'testing');
         config()->set('database.connections.testing', [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
         config()->set('services.gitlab', [
             'client_id' => 'aaa',
             'client_secret' => 'bbb',
             'redirect' => null,
-            'instance_uri' => 'https://gitlab.com/'
+            'instance_uri' => 'https://gitlab.com/',
         ]);
         config()->set('services.dropbox', [
             'client_id' => 'aaa',
@@ -77,11 +76,11 @@ abstract class TestCase extends BaseTestCase
         config()->set('app.cipher', 'AES-256-CBC');
         config()->set('identities.key', 'base64:'.base64_encode($key));
 
-        IdentityFacade::useNamespace("App");
-        IdentityFacade::useIdentityModel("App\\Identity");
-        IdentityFacade::useUserModel("App\\User");
+        IdentityFacade::useNamespace('App');
+        IdentityFacade::useIdentityModel('App\\Identity');
+        IdentityFacade::useUserModel('App\\User');
     }
-    
+
     /**
      * Loads the service provider during the tests
      */
@@ -90,11 +89,11 @@ abstract class TestCase extends BaseTestCase
         return [
             SocialiteServiceProvider::class,
             \SocialiteProviders\Manager\ServiceProvider::class,
-            IdentitiesServiceProvider::class
+            IdentitiesServiceProvider::class,
         ];
     }
 
-    protected function defineDatabaseMigrations() 
+    protected function defineDatabaseMigrations()
     {
         $this->loadLaravelMigrations();
 

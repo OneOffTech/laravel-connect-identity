@@ -2,10 +2,10 @@
 
 namespace Tests\Fixtures\Http\Controllers\Identities\Auth;
 
-use Tests\Fixtures\User;
 use Illuminate\Support\Facades\Validator;
-use Tests\Fixtures\Http\Controllers\Controller;
 use Oneofftech\Identities\Auth\ConnectUserIdentity;
+use Tests\Fixtures\Http\Controllers\Controller;
+use Tests\Fixtures\User;
 
 class ConnectController extends Controller
 {
@@ -36,7 +36,6 @@ class ConnectController extends Controller
     /**
      * Get a validator for an incoming connection request.
      *
-     * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)

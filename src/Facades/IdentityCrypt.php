@@ -32,7 +32,7 @@ class IdentityCrypt extends Facade
     /**
      * Hash a string for pseudoanonymization
      *
-     * @param string $value
+     * @param  string  $value
      * @return string
      */
     public static function hash($value)

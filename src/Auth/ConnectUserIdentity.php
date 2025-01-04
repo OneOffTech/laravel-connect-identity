@@ -6,15 +6,15 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Oneofftech\Identities\Facades\IdentityCrypt;
 use Oneofftech\Identities\Facades\Identity;
+use Oneofftech\Identities\Facades\IdentityCrypt;
 use Oneofftech\Identities\Support\FindIdentity;
-use Oneofftech\Identities\Support\InteractsWithPreviousUrl;
 use Oneofftech\Identities\Support\InteractsWithAdditionalAttributes;
+use Oneofftech\Identities\Support\InteractsWithPreviousUrl;
 
 trait ConnectUserIdentity
 {
-    use RedirectsUsers, InteractsWithPreviousUrl, InteractsWithAdditionalAttributes, FindIdentity;
+    use FindIdentity, InteractsWithAdditionalAttributes, InteractsWithPreviousUrl, RedirectsUsers;
 
     /**
      * Redirect the user to the Authentication provider authentication page.
@@ -68,14 +68,14 @@ trait ConnectUserIdentity
 
         // create or update the user's identity
 
-        list($user, $identity) = DB::transaction(function () use ($user, $provider, $oauthUser) {
+        [$user, $identity] = DB::transaction(function () use ($user, $provider, $oauthUser) {
             $identity = $this->createIdentity($user, $provider, $oauthUser);
 
             return [$user, $identity];
         });
 
         // todo: event(new Connected($user, $identity));
-            
+
         return $this->sendConnectionResponse($request, $identity);
     }
 
@@ -83,14 +83,14 @@ trait ConnectUserIdentity
     {
         return $user->identities()->updateOrCreate(
             [
-            'provider'=> $provider,
-            'provider_id'=> IdentityCrypt::hash($oauthUser->getId())
+                'provider' => $provider,
+                'provider_id' => IdentityCrypt::hash($oauthUser->getId()),
             ],
             [
-            'token'=> IdentityCrypt::encryptString($oauthUser->token),
-            'refresh_token'=> IdentityCrypt::encryptString($oauthUser->refreshToken),
-            'expires_at'=> $oauthUser->expiresIn ? now()->addSeconds($oauthUser->expiresIn) : null,
-            'registration' => false,
+                'token' => IdentityCrypt::encryptString($oauthUser->token),
+                'refresh_token' => IdentityCrypt::encryptString($oauthUser->refreshToken),
+                'expires_at' => $oauthUser->expiresIn ? now()->addSeconds($oauthUser->expiresIn) : null,
+                'registration' => false,
             ]
         );
     }
@@ -111,8 +111,6 @@ trait ConnectUserIdentity
      *
      * @param  mixed  $user
      * @param  mixed  $identity
-     * @param  array  $attributes
-     * @param  \Illuminate\Http\Request  $request
      * @return mixed
      */
     protected function connected($user, $identity, array $attributes, Request $request)

@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use Illuminate\Support\Facades\Session;
 use Oneofftech\Identities\Support\InteractsWithPreviousUrl;
+use Tests\TestCase;
 
 class InteractWithPreviousUrlTest extends TestCase
 {
@@ -18,7 +18,7 @@ class InteractWithPreviousUrlTest extends TestCase
 
         $this->savePreviousUrl();
     }
-    
+
     public function test_previous_url_can_be_retrieved()
     {
         Session::shouldReceive('previousUrl')->andReturnNull();

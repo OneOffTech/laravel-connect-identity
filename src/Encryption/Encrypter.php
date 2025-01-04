@@ -2,8 +2,8 @@
 
 namespace Oneofftech\Identities\Encryption;
 
-use Illuminate\Support\Str;
 use Illuminate\Encryption\Encrypter as BaseEncrypter;
+use Illuminate\Support\Str;
 
 class Encrypter extends BaseEncrypter
 {

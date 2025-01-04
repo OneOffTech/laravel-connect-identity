@@ -2,16 +2,16 @@
 
 namespace Tests\Unit;
 
-use Mockery;
-use Tests\TestCase;
-use Tests\Fixtures\User;
-use SocialiteProviders\GitLab\Provider;
-use Tests\Fixtures\Concern\UseTestFixtures;
-use Illuminate\Validation\ValidationException;
-use Oneofftech\Identities\Facades\IdentityCrypt;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Validation\ValidationException;
+use Mockery;
 use Oneofftech\Identities\Facades\Identity as IdentityFacade;
+use Oneofftech\Identities\Facades\IdentityCrypt;
+use SocialiteProviders\GitLab\Provider;
 use SocialiteProviders\Manager\OAuth2\User as OauthUser;
+use Tests\Fixtures\Concern\UseTestFixtures;
+use Tests\Fixtures\User;
+use Tests\TestCase;
 
 class RegistrationControllerTest extends TestCase
 {
@@ -22,7 +22,7 @@ class RegistrationControllerTest extends TestCase
         $response = $this->get(route('oneofftech::register.provider', ['provider' => 'gitlab']));
 
         $response->assertRedirect();
-        
+
         $location = urldecode($response->headers->get('Location'));
 
         $this->assertStringContainsString('gitlab.com', $location);
@@ -37,15 +37,15 @@ class RegistrationControllerTest extends TestCase
 
         $driverMock = Mockery::mock(Provider::class)->makePartial();
 
-        $oauthFakeUser = (new OauthUser())->map([
-            'id'       => 'U1',
+        $oauthFakeUser = (new OauthUser)->map([
+            'id' => 'U1',
             'nickname' => 'User',
-            'name'     => 'User',
-            'email'    => 'user@local.com',
-            'avatar'   => 'https://gitlab.com',
-            'token'   => 'T1',
+            'name' => 'User',
+            'email' => 'user@local.com',
+            'avatar' => 'https://gitlab.com',
+            'token' => 'T1',
         ]);
-        
+
         $driverMock->shouldReceive('user')->andReturn($oauthFakeUser);
 
         $driverMock->shouldReceive('redirectUrl')->andReturn($driverMock);
@@ -55,7 +55,7 @@ class RegistrationControllerTest extends TestCase
         $response = $this->get(route('oneofftech::register.callback', ['provider' => 'gitlab']));
 
         $response->assertRedirect('http://localhost/home');
-        
+
         $user = User::first();
 
         $this->assertNotNull($user);
@@ -83,15 +83,15 @@ class RegistrationControllerTest extends TestCase
 
         $driverMock = Mockery::mock(Provider::class)->makePartial();
 
-        $oauthFakeUser = (new OauthUser())->map([
-            'id'       => 'U1',
+        $oauthFakeUser = (new OauthUser)->map([
+            'id' => 'U1',
             'nickname' => 'User',
-            'name'     => 'User',
-            'email'    => 'user@local.com',
-            'avatar'   => 'https://gitlab.com',
-            'token'   => 'T1',
+            'name' => 'User',
+            'email' => 'user@local.com',
+            'avatar' => 'https://gitlab.com',
+            'token' => 'T1',
         ]);
-        
+
         $driverMock->shouldReceive('user')->andReturn($oauthFakeUser);
 
         $driverMock->shouldReceive('redirectUrl')->andReturn($driverMock);

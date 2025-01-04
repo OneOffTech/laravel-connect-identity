@@ -2,14 +2,14 @@
 
 namespace Oneofftech\Identities;
 
-use InvalidArgumentException;
 use Illuminate\Support\Manager;
+use InvalidArgumentException;
 use Laravel\Socialite\Facades\Socialite;
 
 class IdentitiesManager extends Manager
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function createDriver($driver)
     {
@@ -22,7 +22,7 @@ class IdentitiesManager extends Manager
             return Socialite::driver($driver);
         }
     }
-    
+
     /**
      * Create an instance of the gitlab driver.
      *
@@ -53,7 +53,7 @@ class IdentitiesManager extends Manager
 
         return Socialite::driver('dropbox');
     }
-    
+
     /**
      * Get the default driver name.
      *

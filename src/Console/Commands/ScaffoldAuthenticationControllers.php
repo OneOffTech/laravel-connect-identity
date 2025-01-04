@@ -10,13 +10,12 @@ use SplFileInfo;
 
 class ScaffoldAuthenticationControllers extends Command
 {
-
     /**
      * Default application namespace
      *
      * @var string
      */
-    const DEFAULT_NAMESPACE = "App\\";
+    const DEFAULT_NAMESPACE = 'App\\';
 
     /**
      * The name and signature of the console command.
@@ -61,7 +60,7 @@ class ScaffoldAuthenticationControllers extends Command
         parent::__construct();
 
         $this->namespace = self::DEFAULT_NAMESPACE;
-        
+
         $this->modelNamespace = self::DEFAULT_NAMESPACE;
 
         $this->filesystem = new Filesystem;
@@ -93,7 +92,7 @@ class ScaffoldAuthenticationControllers extends Command
     {
         try {
             $this->namespace = $this->laravel->getNamespace();
-            
+
             if ($this->namespace !== self::DEFAULT_NAMESPACE) {
                 $this->comment("Using [$this->namespace] as application namespace.");
             }
@@ -198,9 +197,9 @@ class ScaffoldAuthenticationControllers extends Command
      */
     protected function compileModelStub($stub)
     {
-        $originalNamespaceDeclaration = str_replace('\\;', ';', "namespace ".self::DEFAULT_NAMESPACE.';');
+        $originalNamespaceDeclaration = str_replace('\\;', ';', 'namespace '.self::DEFAULT_NAMESPACE.';');
         $newNamespaceDeclaration = str_replace('\\;', ';', "namespace $this->modelNamespace;");
-        
+
         return str_replace(
             $originalNamespaceDeclaration,
             $newNamespaceDeclaration,

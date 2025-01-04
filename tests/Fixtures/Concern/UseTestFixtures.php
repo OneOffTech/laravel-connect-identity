@@ -8,7 +8,7 @@ trait UseTestFixtures
 {
     protected function setUpUseTestFixtures()
     {
-        IdentityFacade::useUserModel("Tests\\Fixtures\\User");
+        IdentityFacade::useUserModel('Tests\\Fixtures\\User');
         IdentityFacade::useIdentityModel('Tests\\Fixtures\\Identity');
         IdentityFacade::useNamespace('Tests\\Fixtures');
         IdentityFacade::routes();

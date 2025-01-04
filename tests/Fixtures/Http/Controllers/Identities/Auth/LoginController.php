@@ -2,8 +2,8 @@
 
 namespace Tests\Fixtures\Http\Controllers\Identities\Auth;
 
-use Tests\Fixtures\Http\Controllers\Controller;
 use Oneofftech\Identities\Auth\AuthenticatesUsersWithIdentity;
+use Tests\Fixtures\Http\Controllers\Controller;
 
 class LoginController extends Controller
 {

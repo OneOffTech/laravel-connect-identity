@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
-use Oneofftech\Identities\Facades\Identity as IdentityFacade;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Oneofftech\Identities\Facades\Identity as IdentityFacade;
+use Tests\TestCase;
 
 class NamespaceConfigurationTest extends TestCase
 {
@@ -18,7 +18,7 @@ class NamespaceConfigurationTest extends TestCase
     public function test_namespace_can_be_customized()
     {
         IdentityFacade::useNamespace('Test\\Fixtures');
-        
+
         $this->assertEquals('Test\\Fixtures', IdentityFacade::namespace());
     }
 
@@ -27,7 +27,7 @@ class NamespaceConfigurationTest extends TestCase
         IdentityFacade::useNamespace('Test\\Fixtures');
 
         IdentityFacade::routes();
-        
+
         /**
          * @var \Illuminate\Routing\Router
          */

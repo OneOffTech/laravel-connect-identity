@@ -6,7 +6,6 @@ use Oneofftech\Identities\Facades\Identity;
 
 trait WithIdentities
 {
-    
     /**
      * Get the associated identities
      *
