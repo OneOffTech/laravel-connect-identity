@@ -27,10 +27,8 @@ as well as the community driven [Socialite Providers](https://socialiteproviders
 
 **requirements**
 
-`oneofftech/laravel-connect-identity` requires **Laravel >= 8.0** and **PHP >= 7.3**.
+- PHP 8.2 or above
 
-> **The package is currently a Work In Progress.** The api might change without notice so it is not yet 
-suitable for production environments.
 
 ## Getting started
 
