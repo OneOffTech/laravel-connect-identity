@@ -7,7 +7,7 @@ return [
     | Encryption Key
     |--------------------------------------------------------------------------
     |
-    | The key is used by the encrypter service and should be set to a 
+    | The key is used by the encrypter service and should be set to a
     | random, 32 character string, otherwise encrypted strings will
     | not be safe. By default the current APP_KEY is used.
     |

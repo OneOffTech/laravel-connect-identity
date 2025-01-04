@@ -2,26 +2,26 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Support\Str;
-use Tests\TestCase;
-use Oneofftech\Identities\Facades\Identity as IdentityFacade;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Contracts\User as SocialiteUser;
+use Oneofftech\Identities\Facades\Identity as IdentityFacade;
 use Oneofftech\Identities\Facades\IdentityCrypt;
 use Oneofftech\Identities\Support\FindIdentity;
 use Tests\Fixtures\Identity;
 use Tests\Fixtures\User;
-use Laravel\Socialite\Contracts\User as SocialiteUser;
+use Tests\TestCase;
 
 class IdentityTraitTest extends TestCase
 {
-    use RefreshDatabase, FindIdentity;
+    use FindIdentity, RefreshDatabase;
 
     public function test_with_identity_trait()
     {
-        IdentityFacade::useNamespace("Tests\\Fixtures\\");
-        IdentityFacade::useIdentityModel("Tests\\Fixtures\\Identity");
-        IdentityFacade::useUserModel("Tests\\Fixtures\\User");
-        
+        IdentityFacade::useNamespace('Tests\\Fixtures\\');
+        IdentityFacade::useIdentityModel('Tests\\Fixtures\\Identity');
+        IdentityFacade::useUserModel('Tests\\Fixtures\\User');
+
         $user = tap((new User), function ($u) {
             $u->forceFill([
                 'email' => 'user@local.local',
@@ -32,11 +32,11 @@ class IdentityTraitTest extends TestCase
         });
 
         $identity = $user->identities()->create([
-            'provider'=> 'social',
-            'provider_id'=> 'aaaa',
-            'token'=> 'tttt',
-            'refresh_token'=> null,
-            'expires_at'=> null,
+            'provider' => 'social',
+            'provider_id' => 'aaaa',
+            'token' => 'tttt',
+            'refresh_token' => null,
+            'expires_at' => null,
             'registration' => true,
         ]);
 
@@ -53,10 +53,10 @@ class IdentityTraitTest extends TestCase
 
     public function test_find_identity_trait()
     {
-        IdentityFacade::useNamespace("Tests\\Fixtures\\");
-        IdentityFacade::useIdentityModel("Tests\\Fixtures\\Identity");
-        IdentityFacade::useUserModel("Tests\\Fixtures\\User");
-        
+        IdentityFacade::useNamespace('Tests\\Fixtures\\');
+        IdentityFacade::useIdentityModel('Tests\\Fixtures\\Identity');
+        IdentityFacade::useUserModel('Tests\\Fixtures\\User');
+
         $expectedUser = tap((new User), function ($u) {
             $u->forceFill([
                 'email' => 'user@local.local',
@@ -66,32 +66,37 @@ class IdentityTraitTest extends TestCase
             ])->save();
 
             $u->identities()->create([
-                'provider'=> 'social',
-                'provider_id'=> IdentityCrypt::hash('P1'),
-                'token'=> 'tttt',
-                'refresh_token'=> null,
-                'expires_at'=> null,
+                'provider' => 'social',
+                'provider_id' => IdentityCrypt::hash('P1'),
+                'token' => 'tttt',
+                'refresh_token' => null,
+                'expires_at' => null,
                 'registration' => true,
             ]);
         });
 
-        $user = $this->findUserFromIdentity(new class implements SocialiteUser {
+        $user = $this->findUserFromIdentity(new class implements SocialiteUser
+        {
             public function getId()
             {
                 return 'P1';
             }
+
             public function getNickname()
             {
                 return null;
             }
+
             public function getName()
             {
                 return null;
             }
+
             public function getEmail()
             {
                 return null;
             }
+
             public function getAvatar()
             {
                 return null;
@@ -103,27 +108,32 @@ class IdentityTraitTest extends TestCase
 
     public function test_find_identity_trait_return_null_when_not_found()
     {
-        IdentityFacade::useNamespace("Tests\\Fixtures\\");
-        IdentityFacade::useIdentityModel("Tests\\Fixtures\\Identity");
-        IdentityFacade::useUserModel("Tests\\Fixtures\\User");
-        
-        $user = $this->findUserFromIdentity(new class implements SocialiteUser {
+        IdentityFacade::useNamespace('Tests\\Fixtures\\');
+        IdentityFacade::useIdentityModel('Tests\\Fixtures\\Identity');
+        IdentityFacade::useUserModel('Tests\\Fixtures\\User');
+
+        $user = $this->findUserFromIdentity(new class implements SocialiteUser
+        {
             public function getId()
             {
                 return 'P1';
             }
+
             public function getNickname()
             {
                 return null;
             }
+
             public function getName()
             {
                 return null;
             }
+
             public function getEmail()
             {
                 return null;
             }
+
             public function getAvatar()
             {
                 return null;
@@ -135,10 +145,10 @@ class IdentityTraitTest extends TestCase
 
     public function test_find_user()
     {
-        IdentityFacade::useNamespace("Tests\\Fixtures\\");
-        IdentityFacade::useIdentityModel("Tests\\Fixtures\\Identity");
-        IdentityFacade::useUserModel("Tests\\Fixtures\\User");
-        
+        IdentityFacade::useNamespace('Tests\\Fixtures\\');
+        IdentityFacade::useIdentityModel('Tests\\Fixtures\\Identity');
+        IdentityFacade::useUserModel('Tests\\Fixtures\\User');
+
         $expectedUser = tap((new User), function ($u) {
             $u->forceFill([
                 'email' => 'user@local.local',

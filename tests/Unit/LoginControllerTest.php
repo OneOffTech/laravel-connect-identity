@@ -2,15 +2,15 @@
 
 namespace Tests\Unit;
 
-use Mockery;
-use Tests\TestCase;
-use SocialiteProviders\GitLab\Provider;
-use Tests\Fixtures\Concern\UseTestFixtures;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
-use SocialiteProviders\Manager\OAuth2\User as OauthUser;
+use Mockery;
 use Oneofftech\Identities\Facades\Identity as IdentityFacade;
 use Oneofftech\Identities\Facades\IdentityCrypt;
+use SocialiteProviders\GitLab\Provider;
+use SocialiteProviders\Manager\OAuth2\User as OauthUser;
+use Tests\Fixtures\Concern\UseTestFixtures;
+use Tests\TestCase;
 
 class LoginControllerTest extends TestCase
 {
@@ -24,7 +24,7 @@ class LoginControllerTest extends TestCase
         $response = $this->get(route('oneofftech::login.provider', ['provider' => 'gitlab']));
 
         $response->assertRedirect();
-        
+
         $location = urldecode($response->headers->get('Location'));
 
         $this->assertStringContainsString('gitlab.com', $location);
@@ -33,16 +33,14 @@ class LoginControllerTest extends TestCase
 
     public function test_user_login()
     {
-        $this->useTestFixtures();
-
         $user = $this->createUser();
 
         $identity = $user->identities()->create([
-            'provider'=> 'gitlab',
-            'provider_id'=> IdentityCrypt::hash('U1'),
-            'token'=> 'T1',
-            'refresh_token'=> null,
-            'expires_at'=> null,
+            'provider' => 'gitlab',
+            'provider_id' => IdentityCrypt::hash('U1'),
+            'token' => 'T1',
+            'refresh_token' => null,
+            'expires_at' => null,
             'registration' => true,
         ]);
 
@@ -50,15 +48,15 @@ class LoginControllerTest extends TestCase
 
         $driverMock = Mockery::mock(Provider::class)->makePartial();
 
-        $oauthFakeUser = (new OauthUser())->map([
-            'id'       => 'U1',
+        $oauthFakeUser = (new OauthUser)->map([
+            'id' => 'U1',
             'nickname' => 'User',
-            'name'     => 'User',
-            'email'    => 'user@local.com',
-            'avatar'   => 'https://gitlab.com',
-            'token'   => 'T1',
+            'name' => 'User',
+            'email' => 'user@local.com',
+            'avatar' => 'https://gitlab.com',
+            'token' => 'T1',
         ]);
-        
+
         $driverMock->shouldReceive('user')->andReturn($oauthFakeUser);
 
         $driverMock->shouldReceive('redirectUrl')->andReturn($driverMock);
@@ -71,19 +69,17 @@ class LoginControllerTest extends TestCase
 
         $this->assertAuthenticatedAs($user);
     }
-    
+
     public function test_user_login_denied_if_identity_cannot_be_found()
     {
-        $this->useTestFixtures();
-
         $user = $this->createUser();
 
         $identity = $user->identities()->create([
-            'provider'=> 'facebook',
-            'provider_id'=> IdentityCrypt::hash('U2'),
-            'token'=> 'T1',
-            'refresh_token'=> null,
-            'expires_at'=> null,
+            'provider' => 'facebook',
+            'provider_id' => IdentityCrypt::hash('U2'),
+            'token' => 'T1',
+            'refresh_token' => null,
+            'expires_at' => null,
             'registration' => true,
         ]);
 
@@ -91,15 +87,15 @@ class LoginControllerTest extends TestCase
 
         $driverMock = Mockery::mock(Provider::class)->makePartial();
 
-        $oauthFakeUser = (new OauthUser())->map([
-            'id'       => 'U1',
+        $oauthFakeUser = (new OauthUser)->map([
+            'id' => 'U1',
             'nickname' => 'User',
-            'name'     => 'User',
-            'email'    => 'user@local.com',
-            'avatar'   => 'https://gitlab.com',
-            'token'   => 'T1',
+            'name' => 'User',
+            'email' => 'user@local.com',
+            'avatar' => 'https://gitlab.com',
+            'token' => 'T1',
         ]);
-        
+
         $driverMock->shouldReceive('user')->andReturn($oauthFakeUser);
 
         $driverMock->shouldReceive('redirectUrl')->andReturn($driverMock);

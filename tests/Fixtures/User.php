@@ -2,8 +2,8 @@
 
 namespace Tests\Fixtures;
 
-use Oneofftech\Identities\WithIdentities;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Oneofftech\Identities\WithIdentities;
 
 class User extends Authenticatable
 {

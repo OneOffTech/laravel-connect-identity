@@ -2,12 +2,12 @@
 
 namespace Tests\Fixtures\Http\Controllers\Identities\Auth;
 
-use Tests\Fixtures\User;
-use Illuminate\Support\Str;
-use Tests\Fixtures\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Oneofftech\Identities\Auth\RegistersUsersWithIdentity;
+use Tests\Fixtures\Http\Controllers\Controller;
+use Tests\Fixtures\User;
 
 class RegisterController extends Controller
 {
@@ -37,7 +37,6 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
@@ -52,7 +51,6 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
      * @return \Illuminate\Contracts\Auth\Authenticatable|\App\User
      */
     protected function create(array $data)

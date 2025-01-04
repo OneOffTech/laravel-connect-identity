@@ -4,7 +4,6 @@ namespace Oneofftech\Identities\Support;
 
 trait InteractsWithAdditionalAttributes
 {
-    
     /**
      * The attributes that should be retrieved from
      * the request to append to the redirect
@@ -27,7 +26,7 @@ trait InteractsWithAdditionalAttributes
         if (empty($attributes)) {
             return;
         }
-        
+
         $request->session()->put('_oot.identities.attributes', json_encode($request->only($attributes)));
     }
 

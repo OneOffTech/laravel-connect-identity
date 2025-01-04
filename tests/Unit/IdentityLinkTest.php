@@ -2,18 +2,18 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
-use Oneofftech\Identities\Facades\Identity;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use InvalidArgumentException;
 use Illuminate\View\Component;
+use InvalidArgumentException;
+use Oneofftech\Identities\Facades\Identity;
 use Oneofftech\Identities\View\Components\IdentityLink;
+use Tests\TestCase;
 
 class IdentityLinkTest extends TestCase
 {
     use DatabaseMigrations;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -23,7 +23,7 @@ class IdentityLinkTest extends TestCase
     public function test_unsupported_action_throws()
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("Specified action [dance] is not supported.");
+        $this->expectExceptionMessage('Specified action [dance] is not supported.');
 
         new IdentityLink('gitlab', 'dance');
     }

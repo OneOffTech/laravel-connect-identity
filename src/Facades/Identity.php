@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Facade;
 use Oneofftech\Identities\IdentitiesManager;
 use SocialiteProviders\Dropbox\DropboxExtendSocialite;
-use SocialiteProviders\Manager\SocialiteWasCalled;
 use SocialiteProviders\GitLab\GitLabExtendSocialite;
+use SocialiteProviders\Manager\SocialiteWasCalled;
 
 /**
  * @see \Oneofftech\Identities\IdentitiesManager
@@ -58,19 +58,19 @@ class Identity extends Facade
         $namespace = '\\'.rtrim(self::$appNamespace, '\\');
 
         $router->match(['get', 'post'], 'login-via/{provider}', "$namespace\Http\Controllers\Identities\Auth\LoginController@redirect")
-            ->name("oneofftech::login.provider");
+            ->name('oneofftech::login.provider');
         $router->get('login-via/{provider}/callback', "$namespace\Http\Controllers\Identities\Auth\LoginController@login")
-            ->name("oneofftech::login.callback");
-        
+            ->name('oneofftech::login.callback');
+
         $router->match(['get', 'post'], 'register-via/{provider}', "$namespace\Http\Controllers\Identities\Auth\RegisterController@redirect")
-            ->name("oneofftech::register.provider");
+            ->name('oneofftech::register.provider');
         $router->get('register-via/{provider}/callback', "$namespace\Http\Controllers\Identities\Auth\RegisterController@register")
-            ->name("oneofftech::register.callback");
-        
+            ->name('oneofftech::register.callback');
+
         $router->match(['get', 'post'], 'connect-via/{provider}', "$namespace\Http\Controllers\Identities\Auth\ConnectController@redirect")
-            ->name("oneofftech::connect.provider");
+            ->name('oneofftech::connect.provider');
         $router->get('connect-via/{provider}/callback', "$namespace\Http\Controllers\Identities\Auth\ConnectController@connect")
-            ->name("oneofftech::connect.callback");
+            ->name('oneofftech::connect.callback');
     }
 
     /**
@@ -88,20 +88,17 @@ class Identity extends Facade
 
     /**
      * Find a user instance by the given ID.
-     *
-     * @param  string  $id
      */
     public static function findUserByIdOrFail(string $id)
     {
         $model = static::newUserModel();
+
         return $model->where($model->getKeyName(), $id)->firstOrFail();
     }
 
     /**
      * Find a user instance by the given provider or fail.
      *
-     * @param  string  $provider
-     * @param  string  $id
      * @return mixed
      */
     public static function findUserByIdentity(string $provider, string $id)
@@ -139,7 +136,6 @@ class Identity extends Facade
     /**
      * Specify the user model that should be used.
      *
-     * @param  string  $model
      * @return static
      */
     public static function useUserModel(string $model)
@@ -174,7 +170,6 @@ class Identity extends Facade
     /**
      * Specify the identity model that should be used.
      *
-     * @param  string  $model
      * @return static
      */
     public static function useIdentityModel(string $model)
@@ -196,7 +191,7 @@ class Identity extends Facade
 
         return new static;
     }
-    
+
     /**
      * Get the configured namespace
      *

@@ -2,18 +2,18 @@
 
 namespace Tests\Unit;
 
-use Mockery;
 use Carbon\Carbon;
-use Tests\TestCase;
-use Tests\Fixtures\User;
-use Illuminate\Support\Str;
-use SocialiteProviders\GitLab\Provider;
-use Tests\Fixtures\Concern\UseTestFixtures;
 use Illuminate\Auth\AuthenticationException;
-use Oneofftech\Identities\Facades\IdentityCrypt;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use SocialiteProviders\Manager\OAuth2\User as OauthUser;
+use Illuminate\Support\Str;
+use Mockery;
 use Oneofftech\Identities\Facades\Identity as IdentityFacade;
+use Oneofftech\Identities\Facades\IdentityCrypt;
+use SocialiteProviders\GitLab\Provider;
+use SocialiteProviders\Manager\OAuth2\User as OauthUser;
+use Tests\Fixtures\Concern\UseTestFixtures;
+use Tests\Fixtures\User;
+use Tests\TestCase;
 
 class ConnectControllerTest extends TestCase
 {
@@ -26,8 +26,7 @@ class ConnectControllerTest extends TestCase
 
         $router = $this->app->make('router');
 
-        $router->get('login', function () {
-        })->name('login');
+        $router->get('login', function () {})->name('login');
 
         $this->withoutExceptionHandling();
 
@@ -42,7 +41,7 @@ class ConnectControllerTest extends TestCase
         IdentityFacade::useNamespace('Tests\\Fixtures');
         IdentityFacade::routes();
 
-        $user = tap((new User()), function ($u) {
+        $user = tap((new User), function ($u) {
             $u->forceFill([
                 'email' => 'user@local.local',
                 'name' => 'User',
@@ -55,7 +54,7 @@ class ConnectControllerTest extends TestCase
             ->get(route('oneofftech::connect.provider', ['provider' => 'gitlab']));
 
         $response->assertRedirect();
-        
+
         $location = urldecode($response->headers->get('Location'));
 
         $this->assertStringContainsString('gitlab.com', $location);
@@ -64,8 +63,6 @@ class ConnectControllerTest extends TestCase
 
     public function test_connect_creates_identity()
     {
-        $this->useTestFixtures();
-
         $user = $this->createUser();
 
         $this->withoutExceptionHandling();
@@ -74,17 +71,17 @@ class ConnectControllerTest extends TestCase
 
         Carbon::setTestNow(Carbon::create(2020, 11, 12, 10, 20));
 
-        $oauthFakeUser = (new OauthUser())->map([
-            'id'       => 'U1',
+        $oauthFakeUser = (new OauthUser)->map([
+            'id' => 'U1',
             'nickname' => 'User',
-            'name'     => 'User',
-            'email'    => 'user@local.com',
-            'avatar'   => 'https://gitlab.com',
-            'token'   => 'T2',
+            'name' => 'User',
+            'email' => 'user@local.com',
+            'avatar' => 'https://gitlab.com',
+            'token' => 'T2',
             'refreshToken' => 'RT2',
             'expiresIn' => Carbon::SECONDS_PER_MINUTE,
         ]);
-        
+
         $driverMock->shouldReceive('user')->andReturn($oauthFakeUser);
 
         $driverMock->shouldReceive('redirectUrl')->andReturn($driverMock);
@@ -105,19 +102,17 @@ class ConnectControllerTest extends TestCase
         $this->assertEquals('RT2', IdentityCrypt::decryptString($updatedIdentity->refresh_token));
         $this->assertFalse($updatedIdentity->registration);
     }
-    
+
     public function test_connect_updates_existing_identity()
     {
-        $this->useTestFixtures();
-
         $user = $this->createUser();
 
         $identity = $user->identities()->create([
-            'provider'=> 'gitlab',
-            'provider_id'=> IdentityCrypt::hash('U1'),
-            'token'=> 'T1',
-            'refresh_token'=> null,
-            'expires_at'=> null,
+            'provider' => 'gitlab',
+            'provider_id' => IdentityCrypt::hash('U1'),
+            'token' => 'T1',
+            'refresh_token' => null,
+            'expires_at' => null,
             'registration' => true,
         ]);
 
@@ -127,17 +122,17 @@ class ConnectControllerTest extends TestCase
 
         Carbon::setTestNow(Carbon::create(2020, 11, 12, 10, 20));
 
-        $oauthFakeUser = (new OauthUser())->map([
-            'id'       => 'U1',
+        $oauthFakeUser = (new OauthUser)->map([
+            'id' => 'U1',
             'nickname' => 'User',
-            'name'     => 'User',
-            'email'    => 'user@local.com',
-            'avatar'   => 'https://gitlab.com',
-            'token'   => 'T2',
+            'name' => 'User',
+            'email' => 'user@local.com',
+            'avatar' => 'https://gitlab.com',
+            'token' => 'T2',
             'refreshToken' => 'RT2',
             'expiresIn' => Carbon::SECONDS_PER_MINUTE,
         ]);
-        
+
         $driverMock->shouldReceive('user')->andReturn($oauthFakeUser);
 
         $driverMock->shouldReceive('redirectUrl')->andReturn($driverMock);

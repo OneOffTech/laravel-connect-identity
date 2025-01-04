@@ -2,12 +2,12 @@
 
 namespace Oneofftech\Identities\Providers;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\ServiceProvider;
-use Oneofftech\Identities\IdentitiesManager;
-use Oneofftech\Identities\Encryption\Encrypter;
-use Oneofftech\Identities\View\Components\IdentityLink;
+use Illuminate\Support\Str;
 use Oneofftech\Identities\Console\Commands\ScaffoldAuthenticationControllers;
+use Oneofftech\Identities\Encryption\Encrypter;
+use Oneofftech\Identities\IdentitiesManager;
+use Oneofftech\Identities\View\Components\IdentityLink;
 
 class IdentitiesServiceProvider extends ServiceProvider
 {
@@ -46,7 +46,7 @@ class IdentitiesServiceProvider extends ServiceProvider
 
             return new Encrypter($key, $app_config['cipher']);
         });
-        
+
         $this->app->singleton(IdentitiesManager::class, function ($app) {
             return new IdentitiesManager($app);
         });

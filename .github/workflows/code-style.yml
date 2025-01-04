@@ -1,44 +1,28 @@
 name: Code-Style
 
-on: 
+on:
   push:
-    branches: 
-      - "master"
-  pull_request:
-    types: [opened, synchronize, reopened]
+    paths:
+      - '**.php'
+
+permissions:
+  contents: write
 
 jobs:
-  php-code-style:
-    name: Check PHP code style
+  php-code-styling:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 1
-    
-    - name: Cache dependencies
-      uses: actions/cache@v1
-      with:
-        path: ~/.composer/cache/files
-        key: dependencies-php-code-style-composer-${{ hashFiles('composer.json') }}
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: 8.0
-        tools: composer:v2
-        extensions: dom, curl, libxml, mbstring, zip
-        coverage: none
-      
-    - name: Install dependencies
-      run: |
-        composer update --prefer-stable --prefer-dist --no-interaction --no-progress
+      - name: Fix PHP code style issues
+        uses: aglipanci/laravel-pint-action@2.4
 
-    - name: Run CS Fixer
-      run: ./vendor/bin/php-cs-fixer fix
-    
-    - name: Commit changes
-      uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: Fix styling
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Fix styling

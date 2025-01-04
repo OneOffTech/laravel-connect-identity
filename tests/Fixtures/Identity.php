@@ -3,12 +3,10 @@
 namespace Tests\Fixtures;
 
 use Illuminate\Database\Eloquent\Model;
-
 use Oneofftech\Identities\Facades\Identity as IdentityFacade;
 
 class Identity extends Model
 {
-
     /**
      * @var array
      */
@@ -39,10 +37,7 @@ class Identity extends Model
         'refresh_token',
         'expires_at',
     ];
-    
-    /**
-     *
-     */
+
     public function user()
     {
         return $this->belongsTo(IdentityFacade::userModel());

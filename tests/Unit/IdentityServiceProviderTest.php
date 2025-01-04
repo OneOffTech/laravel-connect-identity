@@ -2,17 +2,17 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
-use SocialiteProviders\Dropbox\Provider as DropboxDriver;
-use Oneofftech\Identities\Facades\Identity;
-use Oneofftech\Identities\IdentitiesManager;
-use SocialiteProviders\Manager\SocialiteWasCalled;
-use SocialiteProviders\GitLab\GitLabExtendSocialite;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use InvalidArgumentException;
 use Laravel\Socialite\Two\FacebookProvider;
+use Oneofftech\Identities\Facades\Identity;
+use Oneofftech\Identities\IdentitiesManager;
 use Oneofftech\Identities\Providers\IdentitiesServiceProvider;
+use SocialiteProviders\Dropbox\Provider as DropboxDriver;
+use SocialiteProviders\GitLab\GitLabExtendSocialite;
 use SocialiteProviders\GitLab\Provider as GitlabSocialiteProvider;
+use SocialiteProviders\Manager\SocialiteWasCalled;
+use Tests\TestCase;
 
 class IdentityServiceProviderTest extends TestCase
 {
@@ -32,7 +32,7 @@ class IdentityServiceProviderTest extends TestCase
         $factory = $this->app->make(IdentitiesManager::class);
 
         $provider = $factory->driver('gitlab');
-        
+
         $this->assertInstanceOf(GitlabSocialiteProvider::class, $provider);
     }
 

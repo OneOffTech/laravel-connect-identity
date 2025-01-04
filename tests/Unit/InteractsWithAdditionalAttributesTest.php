@@ -3,9 +3,9 @@
 namespace Tests\Unit;
 
 use Illuminate\Http\Request;
-use Tests\TestCase;
 use Illuminate\Support\Facades\Session;
 use Oneofftech\Identities\Support\InteractsWithAdditionalAttributes;
+use Tests\TestCase;
 
 class InteractsWithAdditionalAttributesTest extends TestCase
 {
@@ -17,19 +17,19 @@ class InteractsWithAdditionalAttributesTest extends TestCase
 
         $this->assertEquals([], $attributes);
     }
-    
+
     public function test_nothing_is_saved()
     {
         Session::shouldReceive('put')->never();
 
         $request = Request::create('http://localhost', 'GET', [
-            'attribute' => 'value'
+            'attribute' => 'value',
         ]);
         $request->setLaravelSession(Session::getFacadeRoot());
 
         $this->pushAttributes($request);
     }
-    
+
     public function test_nothing_is_retrieved()
     {
         Session::shouldReceive('previousUrl')->andReturnNull();

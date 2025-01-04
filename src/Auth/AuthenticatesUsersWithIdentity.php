@@ -12,7 +12,7 @@ use Oneofftech\Identities\Support\InteractsWithPreviousUrl;
 
 trait AuthenticatesUsersWithIdentity
 {
-    use RedirectsUsers, InteractsWithPreviousUrl, FindIdentity;
+    use FindIdentity, InteractsWithPreviousUrl, RedirectsUsers;
 
     /**
      * Redirect the user to the provider authentication page.
@@ -54,7 +54,7 @@ trait AuthenticatesUsersWithIdentity
         // GuzzleHttp\Exception\ClientException
         // Client error: `POST https://gitlab.com/oauth/token` resulted in a `401 Unauthorized` response: {"error":"invalid_grant","error_description":"The provided authorization grant is invalid, expired, revoked, does not ma (truncated...)
         // $this->sendFailedLoginResponse
-        
+
         // If we find a registered user with the
         // same identity we attempt to login
 
@@ -63,16 +63,15 @@ trait AuthenticatesUsersWithIdentity
         if (! $user) {
             $this->sendFailedLoginResponse($request, $provider);
         }
-        
-        $this->guard()->login($user /*, $remember = false*/);
-            
+
+        $this->guard()->login($user /* , $remember = false */);
+
         return $this->sendLoginResponse($request);
     }
 
     /**
      * Get the failed login response instance.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Illuminate\Validation\ValidationException
@@ -87,7 +86,6 @@ trait AuthenticatesUsersWithIdentity
     /**
      * Send the response after the user was authenticated.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     protected function sendLoginResponse(Request $request)
@@ -111,7 +109,7 @@ trait AuthenticatesUsersWithIdentity
     {
         //
     }
-    
+
     /**
      * Get the guard to be used during authentication.
      *

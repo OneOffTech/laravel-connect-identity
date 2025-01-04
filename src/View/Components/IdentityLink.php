@@ -9,7 +9,7 @@ use InvalidArgumentException;
 class IdentityLink extends Component
 {
     private static $availableActions = ['register', 'login', 'connect'];
-    
+
     private static $actionLabels = [
         'register' => 'Register via :Provider',
         'login' => 'Log in via :Provider',
@@ -29,7 +29,7 @@ class IdentityLink extends Component
      * @var string
      */
     public $provider;
-    
+
     /**
      * The label for the link
      *
@@ -47,11 +47,11 @@ class IdentityLink extends Component
     /**
      * Create a new component instance.
      *
-     * @param string $provider The identity provider
-     * @param string $action The action the button should perform. Available: login, register. Default login.
-     * @param string $label The label for the link. It will be used as string to localize.
-     *                      Default null a default label in the form "$action via $provider" will be used.
-     * @param array|null $parameter Additional parameters to append on the redirect request
+     * @param  string  $provider  The identity provider
+     * @param  string  $action  The action the button should perform. Available: login, register. Default login.
+     * @param  string  $label  The label for the link. It will be used as string to localize.
+     *                         Default null a default label in the form "$action via $provider" will be used.
+     * @param  array|null  $parameter  Additional parameters to append on the redirect request
      * @return self
      */
     public function __construct($provider, $action = 'login', $label = null, $parameters = null)
