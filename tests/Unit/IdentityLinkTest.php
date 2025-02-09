@@ -11,7 +11,6 @@ use Tests\TestCase;
 
 class IdentityLinkTest extends TestCase
 {
-    use DatabaseMigrations;
 
     protected function setUp(): void
     {

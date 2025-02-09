@@ -8,10 +8,12 @@ use Laravel\Socialite\Contracts\User as SocialiteUser;
 use Oneofftech\Identities\Facades\Identity as IdentityFacade;
 use Oneofftech\Identities\Facades\IdentityCrypt;
 use Oneofftech\Identities\Support\FindIdentity;
+use Orchestra\Testbench\Attributes\WithMigration;
 use Tests\Fixtures\Identity;
 use Tests\Fixtures\User;
 use Tests\TestCase;
 
+#[WithMigration]
 class IdentityTraitTest extends TestCase
 {
     use FindIdentity, RefreshDatabase;

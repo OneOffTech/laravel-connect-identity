@@ -10,7 +10,6 @@ use Tests\TestCase;
 
 class IdentityModelsConfigurationTest extends TestCase
 {
-    use DatabaseMigrations;
 
     public function test_default_models_uses_app_namespace()
     {

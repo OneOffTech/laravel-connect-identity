@@ -59,6 +59,7 @@ abstract class TestCase extends BaseTestCase
             'database' => ':memory:',
             'prefix' => '',
         ]);
+        config()->set('session.driver', 'array');
         config()->set('services.gitlab', [
             'client_id' => 'aaa',
             'client_secret' => 'bbb',

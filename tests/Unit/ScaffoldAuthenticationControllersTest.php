@@ -9,7 +9,6 @@ use Tests\TestCase;
 
 class ScaffoldAuthenticationControllersTest extends TestCase
 {
-    use DatabaseMigrations;
 
     public function test_scaffold()
     {

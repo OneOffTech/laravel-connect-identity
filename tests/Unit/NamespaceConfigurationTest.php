@@ -2,13 +2,15 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Oneofftech\Identities\Facades\Identity as IdentityFacade;
+use Orchestra\Testbench\Attributes\WithMigration;
 use Tests\TestCase;
 
+#[WithMigration]
 class NamespaceConfigurationTest extends TestCase
 {
-    use DatabaseMigrations;
+    use RefreshDatabase;
 
     public function test_default_app_namespace()
     {

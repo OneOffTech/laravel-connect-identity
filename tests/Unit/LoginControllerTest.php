@@ -10,8 +10,10 @@ use Oneofftech\Identities\Facades\IdentityCrypt;
 use SocialiteProviders\GitLab\Provider;
 use SocialiteProviders\Manager\OAuth2\User as OauthUser;
 use Tests\Fixtures\Concern\UseTestFixtures;
+use Orchestra\Testbench\Attributes\WithMigration;
 use Tests\TestCase;
 
+#[WithMigration]
 class LoginControllerTest extends TestCase
 {
     use RefreshDatabase, UseTestFixtures;
