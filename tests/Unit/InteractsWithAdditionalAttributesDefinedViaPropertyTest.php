@@ -35,7 +35,7 @@ class InteractsWithAdditionalAttributesDefinedViaPropertyTest extends TestCase
 
     public function test_attributes_are_retrieved()
     {
-        Session::put('_oot.identities.attributes','{"attribute":"http://localhost/previous"}');
+        Session::put('_oot.identities.attributes', '{"attribute":"http://localhost/previous"}');
 
         $request = Request::create('http://localhost/callback');
         $request->setLaravelSession(Session::driver());

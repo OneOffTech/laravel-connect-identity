@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use Illuminate\Http\Request;
-use Illuminate\Session\SessionManager;
 use Illuminate\Support\Facades\Session;
 use Oneofftech\Identities\Support\InteractsWithAdditionalAttributes;
 use Tests\TestCase;
@@ -35,7 +34,7 @@ class InteractsWithAdditionalAttributesTest extends TestCase
     public function test_nothing_is_retrieved()
     {
         $request = Request::create('http://localhost/callback');
-        
+
         $request->setLaravelSession(Session::driver());
 
         $data = $this->pullAttributes($request);

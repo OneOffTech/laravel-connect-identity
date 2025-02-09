@@ -2,14 +2,12 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Tests\TestCase;
 
 class ScaffoldAuthenticationControllersTest extends TestCase
 {
-
     public function test_scaffold()
     {
         $webRoutesFile = base_path('routes/web.php');

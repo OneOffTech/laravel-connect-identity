@@ -24,7 +24,7 @@ class InteractWithPreviousUrlTest extends TestCase
         Session::put('_previous.url', null);
 
         Session::put('_oot.identities.previous_url', 'http://localhost/previous');
-        
+
         $url = $this->getPreviousUrl();
 
         $this->assertEquals('http://localhost/previous', $url);
