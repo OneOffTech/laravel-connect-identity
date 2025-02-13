@@ -93,7 +93,7 @@ class ConnectControllerTest extends TestCase
         $response = $this->actingAs($user)
             ->get(route('oneofftech::connect.callback', ['provider' => 'gitlab']));
 
-        $response->assertRedirect('http://localhost/home');
+        $response->assertRedirect('http://localhost');
 
         $updatedIdentity = $user->identities->first();
 
@@ -144,7 +144,7 @@ class ConnectControllerTest extends TestCase
         $response = $this->actingAs($user)
             ->get(route('oneofftech::connect.callback', ['provider' => 'gitlab']));
 
-        $response->assertRedirect('http://localhost/home');
+        $response->assertRedirect('http://localhost');
 
         $updatedIdentity = $user->identities->first();
 

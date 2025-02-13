@@ -56,7 +56,7 @@ class RegistrationControllerTest extends TestCase
 
         $response = $this->get(route('oneofftech::register.callback', ['provider' => 'gitlab']));
 
-        $response->assertRedirect('http://localhost/home');
+        $response->assertRedirect('http://localhost');
 
         $user = User::first();
 

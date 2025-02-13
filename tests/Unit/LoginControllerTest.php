@@ -67,7 +67,7 @@ class LoginControllerTest extends TestCase
 
         $response = $this->get(route('oneofftech::login.callback', ['provider' => 'gitlab']));
 
-        $response->assertRedirect('http://localhost/home');
+        $response->assertRedirect('http://localhost');
 
         $this->assertAuthenticatedAs($user);
     }
