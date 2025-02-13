@@ -20,5 +20,4 @@ class LoginController extends Controller
     */
 
     use AuthenticatesUsersWithIdentity;
-
 }

@@ -62,7 +62,7 @@ class Identity extends Facade
 
         $router
             ->middleware('web')
-            ->group(function($groupRouter) use ($namespace) {
+            ->group(function ($groupRouter) use ($namespace) {
                 $groupRouter->match(['get', 'post'], 'login-via/{provider}', "$namespace\Http\Controllers\Identities\Auth\LoginController@redirect")
                     ->name('oneofftech::login.provider');
                 $groupRouter->get('login-via/{provider}/callback', "$namespace\Http\Controllers\Identities\Auth\LoginController@login")
