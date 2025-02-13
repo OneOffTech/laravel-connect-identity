@@ -97,7 +97,7 @@ class ScaffoldAuthenticationControllers extends Command
                 $this->comment("Using [$this->namespace] as application namespace.");
             }
 
-            $this->modelNamespace = is_dir(app_path('Models')) ? $this->namespace.'\Models' : $this->namespace;
+            $this->modelNamespace = is_dir(app_path('Models')) ? $this->namespace.'Models' : $this->namespace;
         } catch (RuntimeException $ex) {
             $this->warn("Unable to identity the application namespace, assuming [$this->namespace].");
         }
