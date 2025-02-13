@@ -21,13 +21,4 @@ class LoginController extends Controller
 
     use AuthenticatesUsersWithIdentity;
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('guest');
-    }
 }
