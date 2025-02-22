@@ -9,12 +9,14 @@ use Illuminate\Support\Str;
 use Mockery;
 use Oneofftech\Identities\Facades\Identity as IdentityFacade;
 use Oneofftech\Identities\Facades\IdentityCrypt;
+use Orchestra\Testbench\Attributes\WithMigration;
 use SocialiteProviders\GitLab\Provider;
 use SocialiteProviders\Manager\OAuth2\User as OauthUser;
 use Tests\Fixtures\Concern\UseTestFixtures;
 use Tests\Fixtures\User;
 use Tests\TestCase;
 
+#[WithMigration]
 class ConnectControllerTest extends TestCase
 {
     use RefreshDatabase, UseTestFixtures;
@@ -91,7 +93,7 @@ class ConnectControllerTest extends TestCase
         $response = $this->actingAs($user)
             ->get(route('oneofftech::connect.callback', ['provider' => 'gitlab']));
 
-        $response->assertRedirect('http://localhost/home');
+        $response->assertRedirect('http://localhost');
 
         $updatedIdentity = $user->identities->first();
 
@@ -142,7 +144,7 @@ class ConnectControllerTest extends TestCase
         $response = $this->actingAs($user)
             ->get(route('oneofftech::connect.callback', ['provider' => 'gitlab']));
 
-        $response->assertRedirect('http://localhost/home');
+        $response->assertRedirect('http://localhost');
 
         $updatedIdentity = $user->identities->first();
 

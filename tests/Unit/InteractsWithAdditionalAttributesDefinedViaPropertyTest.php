@@ -22,29 +22,27 @@ class InteractsWithAdditionalAttributesDefinedViaPropertyTest extends TestCase
 
     public function test_attributes_are_saved()
     {
-        Session::shouldReceive('put')->once()->with('_oot.identities.attributes', '{"attribute":"value"}');
-
         $request = Request::create('http://localhost', 'GET', [
             'attribute' => 'value',
         ]);
-        $request->setLaravelSession(Session::getFacadeRoot());
+        $request->setLaravelSession(Session::driver());
 
         $this->pushAttributes($request);
+
+        $this->assertEquals('{"attribute":"value"}', Session::get('_oot.identities.attributes'));
+        $this->assertNull(Session::previousUrl());
     }
 
     public function test_attributes_are_retrieved()
     {
-        Session::shouldReceive('previousUrl')->andReturnNull();
-
-        Session::shouldReceive('pull')->once()
-            ->with('_oot.identities.attributes')
-            ->andReturn('{"attribute":"http://localhost/previous"}');
+        Session::put('_oot.identities.attributes', '{"attribute":"http://localhost/previous"}');
 
         $request = Request::create('http://localhost/callback');
-        $request->setLaravelSession(Session::getFacadeRoot());
+        $request->setLaravelSession(Session::driver());
 
         $data = $this->pullAttributes($request);
 
         $this->assertEquals(['attribute' => 'http://localhost/previous'], $data);
+        $this->assertNull(Session::previousUrl());
     }
 }

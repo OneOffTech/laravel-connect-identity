@@ -26,14 +26,14 @@ class Identity extends Facade
      *
      * @var string
      */
-    public static $userModel = 'App\\User';
+    public static $userModel = 'App\\Models\\User';
 
     /**
      * The identity model that should be used.
      *
      * @var string
      */
-    public static $identityModel = 'App\\Identity';
+    public static $identityModel = 'App\\Models\\Identity';
 
     /**
      * Get the registered name of the component.
@@ -53,24 +53,34 @@ class Identity extends Facade
      */
     public static function routes()
     {
+        /**
+         * @var \Illuminate\Routing\Router
+         */
         $router = static::$app->make('router');
 
         $namespace = '\\'.rtrim(self::$appNamespace, '\\');
 
-        $router->match(['get', 'post'], 'login-via/{provider}', "$namespace\Http\Controllers\Identities\Auth\LoginController@redirect")
-            ->name('oneofftech::login.provider');
-        $router->get('login-via/{provider}/callback', "$namespace\Http\Controllers\Identities\Auth\LoginController@login")
-            ->name('oneofftech::login.callback');
+        $router
+            ->middleware('web')
+            ->group(function ($groupRouter) use ($namespace) {
+                $groupRouter->match(['get', 'post'], 'login-via/{provider}', "$namespace\Http\Controllers\Identities\Auth\LoginController@redirect")
+                    ->name('oneofftech::login.provider');
+                $groupRouter->get('login-via/{provider}/callback', "$namespace\Http\Controllers\Identities\Auth\LoginController@login")
+                    ->name('oneofftech::login.callback');
 
-        $router->match(['get', 'post'], 'register-via/{provider}', "$namespace\Http\Controllers\Identities\Auth\RegisterController@redirect")
-            ->name('oneofftech::register.provider');
-        $router->get('register-via/{provider}/callback', "$namespace\Http\Controllers\Identities\Auth\RegisterController@register")
-            ->name('oneofftech::register.callback');
+                $groupRouter->match(['get', 'post'], 'register-via/{provider}', "$namespace\Http\Controllers\Identities\Auth\RegisterController@redirect")
+                    ->name('oneofftech::register.provider');
+                $groupRouter->get('register-via/{provider}/callback', "$namespace\Http\Controllers\Identities\Auth\RegisterController@register")
+                    ->name('oneofftech::register.callback');
 
-        $router->match(['get', 'post'], 'connect-via/{provider}', "$namespace\Http\Controllers\Identities\Auth\ConnectController@redirect")
-            ->name('oneofftech::connect.provider');
-        $router->get('connect-via/{provider}/callback', "$namespace\Http\Controllers\Identities\Auth\ConnectController@connect")
-            ->name('oneofftech::connect.callback');
+                $groupRouter->match(['get', 'post'], 'connect-via/{provider}', "$namespace\Http\Controllers\Identities\Auth\ConnectController@redirect")
+                    ->middleware('auth')
+                    ->name('oneofftech::connect.provider');
+                $groupRouter->get('connect-via/{provider}/callback', "$namespace\Http\Controllers\Identities\Auth\ConnectController@connect")
+                    ->middleware('auth')
+                    ->name('oneofftech::connect.callback');
+            });
+
     }
 
     /**

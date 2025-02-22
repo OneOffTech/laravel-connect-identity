@@ -20,27 +20,27 @@ class InteractsWithAdditionalAttributesTest extends TestCase
 
     public function test_nothing_is_saved()
     {
-        Session::shouldReceive('put')->never();
-
         $request = Request::create('http://localhost', 'GET', [
             'attribute' => 'value',
         ]);
-        $request->setLaravelSession(Session::getFacadeRoot());
+
+        $request->setLaravelSession(Session::driver());
 
         $this->pushAttributes($request);
+
+        $this->assertTrue(Session::missing('_oot.identities.attributes'));
     }
 
     public function test_nothing_is_retrieved()
     {
-        Session::shouldReceive('previousUrl')->andReturnNull();
-
-        Session::shouldReceive('pull')->never();
-
         $request = Request::create('http://localhost/callback');
-        $request->setLaravelSession(Session::getFacadeRoot());
+
+        $request->setLaravelSession(Session::driver());
 
         $data = $this->pullAttributes($request);
 
         $this->assertEquals([], $data);
+
+        $this->assertTrue(Session::missing('_oot.identities.attributes'));
     }
 }

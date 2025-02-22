@@ -12,18 +12,18 @@ class InteractWithPreviousUrlTest extends TestCase
 
     public function test_previous_url_is_stored()
     {
-        Session::shouldReceive('previousUrl')->andReturn('http://localhost/previous');
-
-        Session::shouldReceive('put')->once()->with('_oot.identities.previous_url', 'http://localhost/previous');
+        Session::put('_previous.url', 'http://localhost/previous');
 
         $this->savePreviousUrl();
+
+        $this->assertEquals('http://localhost/previous', Session::get('_oot.identities.previous_url'));
     }
 
     public function test_previous_url_can_be_retrieved()
     {
-        Session::shouldReceive('previousUrl')->andReturnNull();
+        Session::put('_previous.url', null);
 
-        Session::shouldReceive('pull')->once()->with('_oot.identities.previous_url', 'http://localhost')->andReturn('http://localhost/previous');
+        Session::put('_oot.identities.previous_url', 'http://localhost/previous');
 
         $url = $this->getPreviousUrl();
 

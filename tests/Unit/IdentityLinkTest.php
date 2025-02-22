@@ -2,7 +2,6 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\View\Component;
 use InvalidArgumentException;
 use Oneofftech\Identities\Facades\Identity;
@@ -11,8 +10,6 @@ use Tests\TestCase;
 
 class IdentityLinkTest extends TestCase
 {
-    use DatabaseMigrations;
-
     protected function setUp(): void
     {
         parent::setUp();

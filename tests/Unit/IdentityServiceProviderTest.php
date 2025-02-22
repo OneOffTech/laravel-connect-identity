@@ -2,21 +2,23 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use InvalidArgumentException;
 use Laravel\Socialite\Two\FacebookProvider;
 use Oneofftech\Identities\Facades\Identity;
 use Oneofftech\Identities\IdentitiesManager;
 use Oneofftech\Identities\Providers\IdentitiesServiceProvider;
+use Orchestra\Testbench\Attributes\WithMigration;
 use SocialiteProviders\Dropbox\Provider as DropboxDriver;
 use SocialiteProviders\GitLab\GitLabExtendSocialite;
 use SocialiteProviders\GitLab\Provider as GitlabSocialiteProvider;
 use SocialiteProviders\Manager\SocialiteWasCalled;
 use Tests\TestCase;
 
+#[WithMigration]
 class IdentityServiceProviderTest extends TestCase
 {
-    use DatabaseMigrations;
+    use RefreshDatabase;
 
     public function test_default_driver_cannot_not_configured()
     {

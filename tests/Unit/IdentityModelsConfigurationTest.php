@@ -2,7 +2,6 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Oneofftech\Identities\Facades\Identity as IdentityFacade;
 use Tests\Fixtures\Identity;
 use Tests\Fixtures\User;
@@ -10,8 +9,6 @@ use Tests\TestCase;
 
 class IdentityModelsConfigurationTest extends TestCase
 {
-    use DatabaseMigrations;
-
     public function test_default_models_uses_app_namespace()
     {
         $this->assertEquals('App\\User', IdentityFacade::userModel());

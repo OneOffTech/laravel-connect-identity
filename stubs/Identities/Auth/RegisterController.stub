@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Identities\Auth;
 
-use App\User;
+use App\Models\User;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use Oneofftech\Identities\Auth\RegistersUsersWithIdentity;
 
@@ -27,19 +26,10 @@ class RegisterController extends Controller
 
     /**
      * Where to redirect users after registration.
-     *
-     * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    protected function redirectTo(): string
     {
-        $this->middleware('guest');
+        return '/';
     }
 
     /**
@@ -68,7 +58,7 @@ class RegisterController extends Controller
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password'] ?? Str::random(20)),
+            'password' => Hash::make($data['password'] ?? Str::random(30)),
         ]);
     }
 }

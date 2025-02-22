@@ -3,18 +3,11 @@
 namespace Tests\Fixtures;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Oneofftech\Identities\Facades\Identity as IdentityFacade;
 
 class Identity extends Model
 {
-    /**
-     * @var array
-     */
-    protected $casts = [
-        'expires_at' => 'datetime',
-        'registration' => 'bool',
-    ];
-
     /**
      * @var array
      */
@@ -38,7 +31,20 @@ class Identity extends Model
         'expires_at',
     ];
 
-    public function user()
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'expires_at' => 'datetime',
+            'registration' => 'bool',
+        ];
+    }
+
+    public function user(): BelongsTo
     {
         return $this->belongsTo(IdentityFacade::userModel());
     }

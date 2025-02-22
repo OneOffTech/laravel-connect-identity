@@ -7,12 +7,14 @@ use Illuminate\Validation\ValidationException;
 use Mockery;
 use Oneofftech\Identities\Facades\Identity as IdentityFacade;
 use Oneofftech\Identities\Facades\IdentityCrypt;
+use Orchestra\Testbench\Attributes\WithMigration;
 use SocialiteProviders\GitLab\Provider;
 use SocialiteProviders\Manager\OAuth2\User as OauthUser;
 use Tests\Fixtures\Concern\UseTestFixtures;
 use Tests\Fixtures\User;
 use Tests\TestCase;
 
+#[WithMigration]
 class RegistrationControllerTest extends TestCase
 {
     use RefreshDatabase, UseTestFixtures;
@@ -54,7 +56,7 @@ class RegistrationControllerTest extends TestCase
 
         $response = $this->get(route('oneofftech::register.callback', ['provider' => 'gitlab']));
 
-        $response->assertRedirect('http://localhost/home');
+        $response->assertRedirect('http://localhost');
 
         $user = User::first();
 

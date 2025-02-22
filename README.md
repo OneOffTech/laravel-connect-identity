@@ -91,20 +91,23 @@ configure the required options inside the `services` configuration file.
         'client_secret' => env('GITLAB_CLIENT_SECRET'),
         'redirect' => null, // set in the controller no need to specify
         'instance_uri' => env('GITLAB_INSTANCE_URI', 'https://gitlab.com/')
+        // 'host' => env('GITLAB_INSTANCE_URI', 'https://gitlab.com/') // if using the default Socialite Gitlab driver
     ],
 ```
 
+> [!TIP]
+> We do require also Socialite Providers Gitlab driver. So you need to include the `Identity::events()` in your app provider. If you want to use the Gitlab driver included in Laravel Socialite you can omitt `Identity::events()`. Remember to use `host` instead of `instance_uri` to configure the url of your Gitlab instance.
+
 If you are using one of the community maintained [Socialite Providers](https://socialiteproviders.com/)
-remember to register their events in your `EventsServiceProvider`.
+remember to register their events in your `AppServiceProvider`.
 
 If you are not using those providers this step is optional.
 
 `oneofftech/laravel-connect-identity` provides out-of-the-box support for the `gitlab` 
 and `dropbox` driver. If you are using those two you might add the following call to 
-your `EventsServiceProvider`.
+your `AppServiceProvider`.
 
 ```php
-
 public function boot()
 {
     parent::boot();
