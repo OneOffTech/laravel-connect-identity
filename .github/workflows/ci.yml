@@ -4,12 +4,16 @@ on:
   push:
     paths:
       - '**.php'
-      - '.github/workflows/run-tests.yml'
+      - '.github/workflows/ci.yml'
       - 'phpunit.xml.dist'
       - 'composer.json'
       - 'composer.lock'
   pull_request:
     types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   phpunit:
@@ -21,7 +25,12 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         php: [8.3, 8.4]
-        laravel: [11, 12]
+        laravel: [12.*, 11.*]
+        include:
+          - laravel: 12.*
+            testbench: 10.*
+          - laravel: 11.*
+            testbench: 9.*
     
     steps:
     - uses: actions/checkout@v4
@@ -48,7 +57,8 @@ jobs:
       
     - name: Install dependencies
       run: |
-        composer update --prefer-dist --no-interaction --with="illuminate/contracts:^${{ matrix.laravel }}"
+        composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+        composer update --prefer-dist --no-interaction
 
     - name: List Installed Dependencies
       run: composer show -D
